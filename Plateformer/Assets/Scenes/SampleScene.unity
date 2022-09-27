@@ -338,6 +338,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: jumpNumber
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: gravityValue
       value: 80
       objectReference: {fileID: 0}
@@ -360,6 +364,10 @@ PrefabInstance:
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: longJumpThreshold
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: platformClipSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: groundLayer.m_Bits
