@@ -10,13 +10,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float verticalMaxSpeed;
     [SerializeField] private float DashValue;
     [SerializeField] private float gravityValue;
+    [SerializeField] private float fallGravityFactor;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField, Range(0, 1)] private float longJumpThreshold;
 
 
     private Rigidbody2D rigidBody;
     private BoxCollider2D boxCollider;
     private bool isGrounded;
+    private bool isCollidingWallLeft;
+    private bool isCollidingWallRight;
     private Vector2 speed;
+    private float currentMaxXSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,21 +33,33 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.01f);
-        isGrounded = Physics2D.OverlapBox(groundedBoxCheck, transform.localScale, 0, groundLayer);
-        if (Input.GetAxis("Horizontal") != 0)
-        {
-            speed.x = (Input.GetAxis("Horizontal") * horizontalGroundSpeed * Vector3.right).x;  
+        Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.46f);
+        Vector3 boxScale = new Vector3(transform.localScale.x, transform.localScale.y / 6, transform.localScale.z);
+        isGrounded = Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer);
+        Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
+        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.01f, 0f), transform.localScale - new Vector3(0,0.05f, 0), 0, wallLayer);
+        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.01f, 0f), transform.localScale - new Vector3(0, 0.05f, 0), 0, wallLayer);
 
-        } else 
+        currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
+        if (isCollidingWallRight)
         {
-            speed.x = (Input.GetAxis("Horizontal") * horizontalGroundSpeed * Vector3.right).x;
+            speed.x = Input.GetAxis("Horizontal") > 0 ? 0 : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;  
+
+        } else if (isCollidingWallLeft)
+        {
+            speed.x = Input.GetAxis("Horizontal") < 0 ? 0 : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
+        } else
+        {
+
+            speed.x = (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
-        if (isGrounded) speed.y = 0;
+        if (isGrounded && speed.y <= 0) speed.y = 0;
+        
         if (Input.GetAxis("Jump") > 0 && isGrounded)
         {
             Jump();
         }
+        if (Input.GetAxis("Jump") == 0 && speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
 
@@ -52,6 +70,7 @@ public class PlayerController : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawCube((Vector2)transform.position + new Vector2(0, -.01f), transform.localScale);
+        Gizmos.DrawCube((Vector2)transform.position, transform.localScale + new Vector3(.02f, 0, 0));
     }
 
     private void Jump()
@@ -61,7 +80,9 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyPhysics()
     {
-        speed.y = speed.y < -verticalMaxSpeed ? -verticalMaxSpeed : speed.y - gravityValue * Time.deltaTime;
+        if (speed.y > 0) speed.y -= gravityValue * Time.deltaTime;
+        else if (speed.y > -verticalMaxSpeed) speed.y -= gravityValue * fallGravityFactor * Time.deltaTime;
+        else speed.y = -verticalMaxSpeed;
         
     }
 
