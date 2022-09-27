@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float horizontalGroundSpeed;
     [SerializeField] private float horizontalAirSpeed;
     [SerializeField] private float verticalImpulse;
+    [SerializeField] private float verticalMaxSpeed;
     [SerializeField] private float DashValue;
     [SerializeField] private float gravityValue;
     [SerializeField] private LayerMask groundLayer;
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rigidBody;
     private BoxCollider2D boxCollider;
     private bool isGrounded;
+    private Vector2 speed;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,15 +29,22 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.01f);
         isGrounded = Physics2D.OverlapBox(groundedBoxCheck, transform.localScale, 0, groundLayer);
-        Debug.Log(isGrounded);
-        if (Input.GetAxis("Horizontal") > 0 || Input.GetAxis("Horizontal") < 0)
+        if (Input.GetAxis("Horizontal") != 0)
         {
-            transform.position += Input.GetAxis("Horizontal") * horizontalGroundSpeed * Vector3.right * Time.deltaTime;  
+            speed.x = (Input.GetAxis("Horizontal") * horizontalGroundSpeed * Vector3.right).x;  
+
+        } else 
+        {
+            speed.x = (Input.GetAxis("Horizontal") * horizontalGroundSpeed * Vector3.right).x;
         }
+        if (isGrounded) speed.y = 0;
         if (Input.GetAxis("Jump") > 0 && isGrounded)
         {
-            rigidBody.AddForce(new Vector2(0, verticalImpulse), ForceMode2D.Impulse);
+            Jump();
         }
+        transform.position += (Vector3)speed * Time.deltaTime;
+        ApplyPhysics();
+
         
         
     }
@@ -44,4 +53,17 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.DrawCube((Vector2)transform.position + new Vector2(0, -.01f), transform.localScale);
     }
+
+    private void Jump()
+    {
+        speed.y = verticalImpulse;
+    }
+
+    private void ApplyPhysics()
+    {
+        speed.y = speed.y < -verticalMaxSpeed ? -verticalMaxSpeed : speed.y - gravityValue * Time.deltaTime;
+        
+    }
+
+
 }
