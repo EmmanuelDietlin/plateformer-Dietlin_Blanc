@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0, 1)] private float longJumpThreshold;
     [SerializeField] private int jumpNumber = 2;
     [SerializeField] private float platformClipSpeed;
+    [SerializeField, Range(0,1)] private float inertia;
 
 
     private Rigidbody2D rigidBody;
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
         if (isGrounded) jumpsLeft = jumpNumber;
         else if (!isGrounded && jumpsLeft == jumpNumber) jumpsLeft--;
+
         if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= platformClipSpeed && platformTag.Equals("SoftPlatform"))
         {
             speed.y = platformClipSpeed;
@@ -72,8 +74,9 @@ public class PlayerController : MonoBehaviour
         } 
         else 
         {
-
-            speed.x = (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
+            
+            if ((Input.GetAxisRaw("Horizontal") == 0) && isGrounded) speed.x *= (1 - 20*inertia*Time.deltaTime);
+            else speed.x = (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
 
         if (isGrounded && speed.y <= 0)
@@ -92,6 +95,7 @@ public class PlayerController : MonoBehaviour
             mayJumpMidAir = true;
             if (speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
         }
+        Debug.Log(speed.x);
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
 

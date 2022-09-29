@@ -448,6 +448,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: inertia
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: DashValue
       value: 1
       objectReference: {fileID: 0}
