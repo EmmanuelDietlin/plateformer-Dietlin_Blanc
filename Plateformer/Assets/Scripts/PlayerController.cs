@@ -27,12 +27,15 @@ public class PlayerController : MonoBehaviour
     private float currentMaxXSpeed;
     private int jumpsLeft;
     private bool mayJumpMidAir;
+    private string platformTag;
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = gameObject.GetComponent<Rigidbody2D>();
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
         jumpsLeft = jumpNumber;
+        //Time.timeScale = .1f;
+        
     }
 
     // Update is called once per frame
@@ -41,15 +44,19 @@ public class PlayerController : MonoBehaviour
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
         Vector3 boxScale = new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z);
         isGrounded = Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer);
+        platformTag = isGrounded ? Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer).tag : "";
+        Debug.Log(platformTag.Equals("SoftPlatform"));
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
-        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.01f, 0f), transform.localScale - new Vector3(0,0.05f, 0), 0, wallLayer);
-        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.01f, 0f), transform.localScale - new Vector3(0, 0.05f, 0), 0, wallLayer);
+        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
+        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
 
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
         if (isGrounded) jumpsLeft = jumpNumber;
-        Debug.Log("Left " + isCollidingWallLeft);
-        Debug.Log("Right " + isCollidingWallRight);
-        if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= platformClipSpeed) speed.y = platformClipSpeed;
+        if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= platformClipSpeed && platformTag.Equals("SoftPlatform"))
+        {
+            speed.y = platformClipSpeed;
+        }
+            
         if (isCollidingWallRight && isCollidingWallLeft)
         {
             speed.x = 0;
@@ -68,25 +75,36 @@ public class PlayerController : MonoBehaviour
 
             speed.x = (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
-        if (isGrounded && speed.y <= 0) speed.y = 0;
+
+        if (isGrounded && speed.y <= 0)
+        {
+            speed.y = 0;
+            Debug.Log("Hit");
+            Debug.Log(speed.y);
+
+        }
         if (Input.GetAxis("Jump") > 0 && mayJumpMidAir && jumpsLeft > 0)
         {
             mayJumpMidAir = false;
             jumpsLeft--;
             Jump();
         }
+        Debug.Log(speed.y);
         if (Input.GetAxis("Jump") == 0 && speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
+        Debug.Log(speed.y);
         if (Input.GetAxis("Jump") == 0) mayJumpMidAir = true; 
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
+        Debug.Log(speed.y);
 
-        
-        
+
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.DrawCube((Vector2)transform.position + new Vector2(0, -.17f), new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z));
+        //Gizmos.DrawCube((Vector2)transform.position + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y, transform.localScale.z));
+        //Gizmos.DrawCube((Vector2)transform.position + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y, transform.localScale.z));
     }
 
     private void Jump()
@@ -100,6 +118,20 @@ public class PlayerController : MonoBehaviour
         else if (speed.y > -verticalMaxSpeed) speed.y -= gravityValue * fallGravityFactor * Time.deltaTime;
         else speed.y = -verticalMaxSpeed;
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        ColliderDistance2D distance = boxCollider.Distance(collision);
+        if (distance.normal.x != 0)
+        {
+            transform.position -= new Vector3(distance.normal.x * Mathf.Abs(distance.distance), 0, 0);
+        }
+        if (distance.normal.y != 0)
+        {
+            transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
+        }
+        if (collision.tag.Equals("HardPlatform")) speed.y = 0;
     }
 
 
