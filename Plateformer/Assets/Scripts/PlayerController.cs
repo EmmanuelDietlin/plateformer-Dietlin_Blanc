@@ -45,13 +45,13 @@ public class PlayerController : MonoBehaviour
         Vector3 boxScale = new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z);
         isGrounded = Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer);
         platformTag = isGrounded ? Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer).tag : "";
-        Debug.Log(platformTag.Equals("SoftPlatform"));
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
         isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
 
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
         if (isGrounded) jumpsLeft = jumpNumber;
+        else if (!isGrounded && jumpsLeft == jumpNumber) jumpsLeft--;
         if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= platformClipSpeed && platformTag.Equals("SoftPlatform"))
         {
             speed.y = platformClipSpeed;
@@ -79,8 +79,6 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && speed.y <= 0)
         {
             speed.y = 0;
-            Debug.Log("Hit");
-            Debug.Log(speed.y);
 
         }
         if (Input.GetAxis("Jump") > 0 && mayJumpMidAir && jumpsLeft > 0)
@@ -89,13 +87,13 @@ public class PlayerController : MonoBehaviour
             jumpsLeft--;
             Jump();
         }
-        Debug.Log(speed.y);
-        if (Input.GetAxis("Jump") == 0 && speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
-        Debug.Log(speed.y);
-        if (Input.GetAxis("Jump") == 0) mayJumpMidAir = true; 
+        if (Input.GetAxis("Jump") == 0)
+        {
+            mayJumpMidAir = true;
+            if (speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
+        }
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
-        Debug.Log(speed.y);
 
 
     }
