@@ -17,9 +17,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int jumpNumber = 2;
     [SerializeField] private float platformClipSpeed;
     [SerializeField, Range(0,1)] private float inertia;
+    [SerializeField] private float dashValue;
+    [SerializeField] private float dashTimer;
 
 
-    private Rigidbody2D rigidBody;
+    
     private BoxCollider2D boxCollider;
     private bool isGrounded;
     private bool isCollidingWallLeft;
@@ -29,12 +31,14 @@ public class PlayerController : MonoBehaviour
     private int jumpsLeft;
     private bool mayJumpMidAir;
     private string platformTag;
+    private float dashStartTime;
+    private Vector2 additionalSpeed;
     // Start is called before the first frame update
     void Start()
     {
-        rigidBody = gameObject.GetComponent<Rigidbody2D>();
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
         jumpsLeft = jumpNumber;
+        dashStartTime = 0f;
         //Time.timeScale = .1f;
         
     }
@@ -42,6 +46,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        var curTime = Time.time;
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
         Vector3 boxScale = new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z);
         isGrounded = Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, groundLayer);
@@ -76,7 +81,7 @@ public class PlayerController : MonoBehaviour
         {
             
             if ((Input.GetAxisRaw("Horizontal") == 0) && isGrounded) speed.x *= (1 - 20*inertia*Time.deltaTime);
-            else speed.x = (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
+            else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
 
         if (isGrounded && speed.y <= 0)
@@ -95,7 +100,11 @@ public class PlayerController : MonoBehaviour
             mayJumpMidAir = true;
             if (speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
         }
-        Debug.Log(speed.x);
+        if (Input.GetAxisRaw("Dash") != 0 && (curTime > dashStartTime + dashTimer))
+        {
+            Dash();
+        }
+        //Debug.Log(speed.x);
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
 
@@ -120,6 +129,15 @@ public class PlayerController : MonoBehaviour
         else if (speed.y > -verticalMaxSpeed) speed.y -= gravityValue * fallGravityFactor * Time.deltaTime;
         else speed.y = -verticalMaxSpeed;
         
+    }
+
+    private void Dash()
+    {
+        dashStartTime = Time.time;
+        Debug.Log(speed.x);
+        float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
+        Debug.Log(movDirX);
+        speed.x += dashValue * movDirX * currentMaxXSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
