@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dashValue;
     [SerializeField] private float dashTimer;
     [SerializeField, Range(0,1)] private float bouncyPlatformBounciness;
+    [SerializeField] private float jumpTimeTolerance;
+    //[SerializeField] private float 
 
 
     
@@ -37,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private string platformTag;
     private float dashStartTime;
     private bool isBouncing;
+    private float jumpBufferTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,8 +63,11 @@ public class PlayerController : MonoBehaviour
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
 
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
+        if (Input.GetAxis("Jump") != 0) jumpBufferTime = jumpTimeTolerance;
+        jumpTimeTolerance -= Time.deltaTime;
         if (isGrounded) jumpsLeft = jumpNumber;
         else if (!isGrounded && jumpsLeft == jumpNumber) jumpsLeft--;
+        
 
         if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= platformClipSpeed && platformTag.Equals("SoftPlatform"))
         {
@@ -100,8 +106,9 @@ public class PlayerController : MonoBehaviour
             isBouncing = true;
             speed.y = Mathf.Min(speed.y * bouncyPlatformBounciness * -1f / Mathf.Sqrt(fallGravityFactor), verticalMaxSpeed / Mathf.Sqrt(fallGravityFactor));
         }
-        if (Input.GetAxis("Jump") > 0 && mayJumpMidAir && jumpsLeft > 0)
+        if ((Input.GetAxis("Jump") > 0 || jumpBufferTime > 0f) && mayJumpMidAir && jumpsLeft > 0)
         {
+            jumpBufferTime = 0f;
             mayJumpMidAir = false;
             jumpsLeft--;
             Jump();
