@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0,20)] private float dashBrake;
     [SerializeField] private float dashValue;
     [SerializeField] private float dashTimer;
+    [SerializeField, Range(0,1)] private float bouncyPlatformBounciness;
 
 
     
@@ -34,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private bool mayJumpMidAir;
     private string platformTag;
     private float dashStartTime;
+    private bool isBouncing;
     // Start is called before the first frame update
     void Start()
     {
@@ -86,10 +89,16 @@ public class PlayerController : MonoBehaviour
             else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
 
-        if (isGrounded && speed.y <= 0)
+        if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && Mathf.Abs(speed.y) < .5f))
         {
             speed.y = 0;
+            isBouncing = false;
 
+        }
+        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -.5f)
+        {
+            isBouncing = true;
+            speed.y = Mathf.Min(speed.y * bouncyPlatformBounciness * -1f / Mathf.Sqrt(fallGravityFactor), verticalMaxSpeed / Mathf.Sqrt(fallGravityFactor));
         }
         if (Input.GetAxis("Jump") > 0 && mayJumpMidAir && jumpsLeft > 0)
         {
@@ -97,16 +106,15 @@ public class PlayerController : MonoBehaviour
             jumpsLeft--;
             Jump();
         }
-        if (Input.GetAxis("Jump") == 0)
+        if (Input.GetAxis("Jump") == 0 && !isBouncing)
         {
             mayJumpMidAir = true;
-            if (speed.y > verticalImpulse * longJumpThreshold) speed.y /= 1.5f;
+            if (speed.y >= verticalImpulse * longJumpThreshold) speed.y *= (longJumpThreshold);
         }
         if (Input.GetAxisRaw("Dash") != 0 && (curTime > dashStartTime + dashTimer))
         {
             Dash();
         }
-        //Debug.Log(speed.x);
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
 
@@ -135,9 +143,7 @@ public class PlayerController : MonoBehaviour
     private void Dash()
     {
         dashStartTime = Time.time;
-        Debug.Log(speed.x);
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        Debug.Log(movDirX);
         speed.x += dashValue * movDirX * currentMaxXSpeed;
     }
 
@@ -153,6 +159,7 @@ public class PlayerController : MonoBehaviour
             transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
         }
         if (collision.tag.Equals("HardPlatform")) speed.y = 0;
+        //if (collision.tag.Equals("BouncyPlatform")) speed.y = verticalImpulse  * -1f;
     }
 
 
