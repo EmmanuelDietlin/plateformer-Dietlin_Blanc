@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0, 1)] private float longJumpThreshold;
     [SerializeField] private int jumpNumber = 2;
     [SerializeField] private float platformClipSpeed;
-    [SerializeField, Range(0,1)] private float inertia;
+    [SerializeField, Range(0,30)] private float inertia;
+    [SerializeField, Range(0,20)] private float dashBrake;
     [SerializeField] private float dashValue;
     [SerializeField] private float dashTimer;
 
@@ -32,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private bool mayJumpMidAir;
     private string platformTag;
     private float dashStartTime;
-    private Vector2 additionalSpeed;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,9 +65,9 @@ public class PlayerController : MonoBehaviour
             speed.y = platformClipSpeed;
         }
             
-        if (isCollidingWallRight && isCollidingWallLeft)
+        else if (isCollidingWallRight && isCollidingWallLeft)
         {
-            speed.x = 0;
+            //speed.x = 0;
         }
         else if (isCollidingWallRight)
         {
@@ -79,8 +80,9 @@ public class PlayerController : MonoBehaviour
         } 
         else 
         {
+            if (Mathf.Abs(speed.x) >= currentMaxXSpeed) speed.x *= Mathf.Max((1 - dashBrake * Time.deltaTime), 0);
             
-            if ((Input.GetAxisRaw("Horizontal") == 0) && isGrounded) speed.x *= (1 - 20*inertia*Time.deltaTime);
+            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - inertia*Time.deltaTime),0);
             else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
         }
 
@@ -107,7 +109,6 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(speed.x);
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
-
 
     }
 
