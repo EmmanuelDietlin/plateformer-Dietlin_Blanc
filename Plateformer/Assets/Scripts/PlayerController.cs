@@ -69,8 +69,8 @@ public class PlayerController : MonoBehaviour
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
 
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
-        if (Input.GetAxis("Jump") != 0) jumpBufferTime = jumpTimeTolerance;
-        jumpTimeTolerance -= Time.deltaTime;
+        if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) jumpBufferTime = jumpTimeTolerance;
+        jumpBufferTime -= Time.deltaTime;
         if (isGrounded) jumpsLeft = jumpNumber;
         else if (!isGrounded && jumpsLeft == jumpNumber) jumpsLeft--;
         
@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
             isBouncing = true;
             speed.y = Mathf.Min(speed.y * bouncyPlatformBounciness * -1f / Mathf.Sqrt(fallGravityFactor), verticalMaxSpeed / Mathf.Sqrt(fallGravityFactor));
         }
-        if ((Input.GetAxisRaw("Jump") > 0 || jumpBufferTime > 0f) && mayJumpMidAir && jumpsLeft > 0)
+        if ((Input.GetAxisRaw("Jump") > 0 || (jumpBufferTime > 0f && isGrounded)) && mayJumpMidAir && jumpsLeft > 0)
         {
             jumpBufferTime = 0f;
             mayJumpMidAir = false;
