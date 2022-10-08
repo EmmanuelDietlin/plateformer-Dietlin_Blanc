@@ -7,29 +7,56 @@ using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float horizontalGroundSpeed;
-    [SerializeField] private float horizontalAirSpeed;
+    [Header("Jump")]
+    [Space(4)]
     [SerializeField] private float verticalImpulse;
-    [SerializeField] private float verticalMaxSpeed;
-    [SerializeField] private float gravityValue;
-    [SerializeField, Range(0, 1)] private float wallFriction;
-    [SerializeField] private float fallGravityFactor;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
     [SerializeField, Range(0, 1)] private float longJumpThreshold;
     [SerializeField] private int jumpNumber = 2;
-    [SerializeField] private float platformClipSpeed;
-    [SerializeField, Range(0,30)] private float inertia;
+    [SerializeField] private float jumpTimeTolerance;
+    [Space(10)]
+
+    [Header("Dash")]
+    [Space(4)]
     [SerializeField, Range(0,20)] private float dashBrake;
     [SerializeField] private float dashValue;
     [SerializeField] private float dashTimer;
-    [SerializeField, Range(0,1)] private float bouncyPlatformBounciness;
-    [SerializeField] private float jumpTimeTolerance;
-    //[SerializeField] private float 
+    [Space(10)]
+
+    [Header("Ground Movement")]
+    [Space(4)]
+    [SerializeField] private float horizontalGroundSpeed;
+    [SerializeField, Range(0,30)] private float inertia;
+    [Space(10)]
+
+    [Header("Air Movement")]
+    [Space(4)]
+    [SerializeField] private float horizontalAirSpeed;
+    [SerializeField] private float fallGravityFactor;
+    [SerializeField] private float gravityValue;
+    [SerializeField] private float verticalMaxSpeed;
+    [Space(10)]
+
+    [Header("Wall Jump")]
+    [Space(4)]
+    [SerializeField, Range(0, 1)] private float wallFriction;
     [SerializeField] private float wallGrabDuration;
+    [Space(10)]
+
+    [Header("Special Platforms")]
+    [Space(4)]
+    [SerializeField] private float platformClipSpeed;
+    [SerializeField, Range(0,1)] private float bouncyPlatformBounciness;
+    [Space(10)]
+
+    [Header("Collisions")]
+    [Space(4)]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask wallLayer;
+    [Space(10)]
 
 
-    
+
+
     private BoxCollider2D boxCollider;
     private bool isGrounded;
     private bool isCollidingWallLeft;
@@ -45,6 +72,7 @@ public class PlayerController : MonoBehaviour
     private Collider2D groundCollider2D;
     private bool isBouncing;
     private float jumpBufferTime;
+    private Vector3 startPosition;
     // Start is called before the first frame update
     void Start()
     {
@@ -52,7 +80,7 @@ public class PlayerController : MonoBehaviour
         jumpsLeft = jumpNumber;
         dashStartTime = 0f;
         isGrabingWall = false;
-        //Time.timeScale = .1f;
+        startPosition = transform.position;
         
     }
 
@@ -70,9 +98,13 @@ public class PlayerController : MonoBehaviour
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, wallLayer);
 
         currentMaxXSpeed = isGrounded ? horizontalGroundSpeed : horizontalAirSpeed;
-        if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) jumpBufferTime = jumpTimeTolerance;
+
+        if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) 
+            jumpBufferTime = jumpTimeTolerance;
+
         jumpBufferTime -= Time.deltaTime;
-        if (isGrounded) jumpsLeft = jumpNumber;
+        if (isGrounded) 
+            jumpsLeft = jumpNumber;
         else if (!isGrounded && jumpsLeft == jumpNumber && groundCollider2D != null && groundCollider2D.transform.position.y > transform.position.y)
         {
             jumpsLeft--;
@@ -85,7 +117,7 @@ public class PlayerController : MonoBehaviour
         else if (isCollidingWallRight && isCollidingWallLeft)
         {
             isBouncing = false;
-            //speed.x = 0;
+            //transform.position = startPosition;
         }
         else if (isCollidingWallRight)
         {
@@ -95,7 +127,7 @@ public class PlayerController : MonoBehaviour
             {
                 isGrabingWall = true;
                 speed.y = 0;
-                jumpsLeft = 1;
+                jumpsLeft++;
             }
             else if(Input.GetAxis("Horizontal") == 0)
             {
@@ -112,7 +144,7 @@ public class PlayerController : MonoBehaviour
             {
                 isGrabingWall = true;
                 speed.y = 0;
-                jumpsLeft = 1;
+                jumpsLeft++;
             }
             else if (Input.GetAxis("Horizontal") == 0)
             {
@@ -136,8 +168,9 @@ public class PlayerController : MonoBehaviour
         if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -.5f)
         {
             isBouncing = true;
-            speed.y = Mathf.Min(speed.y * bouncyPlatformBounciness * -1f / Mathf.Sqrt(fallGravityFactor), verticalMaxSpeed / Mathf.Sqrt(fallGravityFactor));
-        } else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && Mathf.Abs(speed.y) < .5f))
+            Bounce();
+        } 
+        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && Mathf.Abs(speed.y) < .5f))
         {
             isBouncing = false;
             speed.y = 0;
@@ -211,6 +244,11 @@ public class PlayerController : MonoBehaviour
         if(isCollidingWallLeft)
             movDirX = 1;
         speed.x += dashValue * movDirX * currentMaxXSpeed;
+    }
+
+    private void Bounce()
+    {
+        speed.y = Mathf.Min(speed.y * bouncyPlatformBounciness * -1f / Mathf.Sqrt(fallGravityFactor), verticalMaxSpeed / Mathf.Sqrt(fallGravityFactor));
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
