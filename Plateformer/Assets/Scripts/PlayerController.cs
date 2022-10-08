@@ -132,7 +132,6 @@ public class PlayerController : MonoBehaviour
                 wallGrabStopStartTime = Time.time;
             isGrabingWall = false;
         }
-        Debug.Log(isBouncing);
       
         if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -.5f)
         {
