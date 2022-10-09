@@ -7,8 +7,14 @@ using UnityEngine.UI;
 
 public class GUIManager : MonoBehaviour
 {
+    [Header("Menus")]
     [SerializeField] private GameObject modificationMenu;
     [SerializeField] private GameObject feedbacksMenu;
+    [SerializeField] private Toggle feedbacksEnable; 
+    [SerializeField] private GameObject feedbacksCheckboxGroup;
+    [Space(10)]
+
+
 
     [Header("Air Movement")]
     [SerializeField] private TextMeshProUGUI horizontalAirSpeed;
@@ -63,6 +69,7 @@ public class GUIManager : MonoBehaviour
     [Space(10)]
 
     private PlayerController player;
+    private Toggle[] feedbackCheckboxToggles;
 
     // Start is called before the first frame update
     void Start()
@@ -70,6 +77,7 @@ public class GUIManager : MonoBehaviour
         modificationMenu.SetActive(false);
         feedbacksMenu.SetActive(false);
         player = FindObjectOfType<PlayerController>();
+        feedbackCheckboxToggles = feedbacksCheckboxGroup.GetComponentsInChildren<Toggle>();
 
         horizontalAirSpeed.text =  player.HorizontalAirSpeed.ToString();
         gravityValue.text = player.GravityValue.ToString();
@@ -218,6 +226,14 @@ public class GUIManager : MonoBehaviour
     {
         player.LongJumpThreshold = longJumpThresholdSlider.value;
         longJumpThreshold.text = longJumpThresholdSlider.value.ToString();  
+    }
+
+    public void OnFeedbackEnableChange()
+    {
+        foreach (var toggle in feedbackCheckboxToggles)
+        {
+            toggle.isOn = feedbacksEnable.isOn;
+        }
     }
 
 
