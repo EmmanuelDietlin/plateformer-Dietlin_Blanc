@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class GUIManager : MonoBehaviour
 {
     [SerializeField] private GameObject modificationMenu;
+    [SerializeField] private GameObject feedbacksMenu;
 
     [Header("Air Movement")]
     [SerializeField] private TextMeshProUGUI horizontalAirSpeed;
@@ -67,6 +68,7 @@ public class GUIManager : MonoBehaviour
     void Start()
     {
         modificationMenu.SetActive(false);
+        feedbacksMenu.SetActive(false);
         player = FindObjectOfType<PlayerController>();
 
         horizontalAirSpeed.text =  player.HorizontalAirSpeed.ToString();
@@ -106,9 +108,14 @@ public class GUIManager : MonoBehaviour
 
     }
 
-    public void OnCheckBoxChange()
+    public void OnModificationMenuCheckboxChange()
     {
         modificationMenu.SetActive(!(modificationMenu.activeSelf));
+    }
+
+    public void OnFeedbacksMenuCheckboxChange()
+    {
+        feedbacksMenu.SetActive(!(feedbacksMenu.activeSelf));
     }
 
     public void OnHorizontalAirSpeedChange()
