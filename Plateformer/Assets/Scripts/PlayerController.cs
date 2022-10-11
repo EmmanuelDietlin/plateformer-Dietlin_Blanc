@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
     private bool isCollidingWallLeft;
     private bool isCollidingWallRight;
     private Vector2 speed;
+    public Vector2 Speed { get { return speed; } }
     private float currentMaxXSpeed;
     private int jumpsLeft;
     private bool mayJumpMidAir;
@@ -92,6 +93,8 @@ public class PlayerController : MonoBehaviour
     private bool isBouncing;
     private float jumpBufferTime;
     private Vector3 startPosition;
+    private Feedbacks feedbacks;
+    private bool prevGroundedStatus;
     // Start is called before the first frame update
     void Start()
     {
@@ -100,12 +103,13 @@ public class PlayerController : MonoBehaviour
         dashStartTime = 0f;
         isGrabingWall = false;
         startPosition = transform.position;
-        
+        feedbacks = gameObject.GetComponent<Feedbacks>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        prevGroundedStatus = isGrounded;
         var curTime = Time.time;
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
         Vector3 boxScale = new Vector3(transform.localScale.x * 0.9f, transform.localScale.y * .69f, transform.localScale.z);
@@ -120,10 +124,12 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) 
             jumpBufferTime = JumpTimeTolerance;
-        Debug.Log(jumpBufferTime);
         jumpBufferTime -= Time.deltaTime;
-        if (isGrounded) 
+        if (isGrounded)
+        {
+            if (isGrounded != prevGroundedStatus) feedbacks.JumpParticles();
             jumpsLeft = JumpNumber;
+        }
         else if (!isGrounded && jumpsLeft == JumpNumber && groundCollider2D != null && groundCollider2D.transform.position.y > transform.position.y)
         {
             jumpsLeft--;
@@ -222,6 +228,7 @@ public class PlayerController : MonoBehaviour
         }
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
+        feedbacks.Stretch(2, 2, currentMaxXSpeed, horizontalAirSpeed);
 
     }
 
