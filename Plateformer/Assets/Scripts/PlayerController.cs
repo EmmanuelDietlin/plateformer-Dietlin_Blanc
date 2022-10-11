@@ -120,7 +120,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) 
             jumpBufferTime = JumpTimeTolerance;
-
+        Debug.Log(jumpBufferTime);
         jumpBufferTime -= Time.deltaTime;
         if (isGrounded) 
             jumpsLeft = JumpNumber;
