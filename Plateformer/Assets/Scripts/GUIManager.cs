@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GUIManager : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private GameObject feedbacksMenu;
     [SerializeField] private Toggle feedbacksEnable; 
     [SerializeField] private GameObject feedbacksCheckboxGroup;
+    [SerializeField] private GameObject pauseMenu;
     [Space(10)]
 
 
@@ -71,6 +73,9 @@ public class GUIManager : MonoBehaviour
     private PlayerController player;
     private Toggle[] feedbackCheckboxToggles;
 
+    private float pauseMenuTimer = .5f;
+    private float time;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -114,6 +119,13 @@ public class GUIManager : MonoBehaviour
     void Update()
     {
 
+        if (Input.GetAxisRaw("Pause") > 0 && Time.unscaledTime > pauseMenuTimer + time)
+        {
+            Debug.Log("pouic");
+            time = Time.unscaledTime;
+            if (pauseMenu.activeSelf) OnResume();
+            else OnPause();
+        }
     }
 
     public void OnModificationMenuCheckboxChange()
@@ -234,6 +246,30 @@ public class GUIManager : MonoBehaviour
         {
             toggle.isOn = feedbacksEnable.isOn;
         }
+    }
+
+    public void OnPause()
+    {
+        Time.timeScale = 0f;
+        pauseMenu.SetActive(true);
+
+    }
+
+    public void OnResume()
+    {
+        Time.timeScale = 1f;
+        pauseMenu.SetActive(false);
+    }
+
+    public void LoadMainMenu()
+    {
+        OnResume();
+        StartCoroutine(loadMainMenu());
+    }
+
+    private IEnumerator loadMainMenu()
+    {
+        yield return SceneManager.LoadSceneAsync(0);
     }
 
 

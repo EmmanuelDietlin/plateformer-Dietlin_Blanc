@@ -81,11 +81,8 @@ public class Feedbacks : MonoBehaviour
     public void Stretch(float maxXSpeed, float maxYSpeed)
     {
         float maxX_scale = speedStretchValues.x, maxY_scale = speedStretchValues.y;
-        Debug.Log(maxX_scale);
-        Debug.Log(maxY_scale);
         float newXScale = LinearScale(maxX_scale, refScale.x, maxXSpeed, Mathf.Abs(player.Speed.x));
         float newYScale = ExponentialScale(maxY_scale, refScale.y, maxYSpeed, Mathf.Abs(player.Speed.y));
-        Debug.Log(newYScale);
         playerSprite.transform.localScale = new Vector3(newXScale,newYScale);
     }
 
