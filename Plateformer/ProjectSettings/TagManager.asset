@@ -7,6 +7,7 @@ TagManager:
   - HardPlatform
   - SoftPlatform
   - BouncyPlatform
+  - Spike
   layers:
   - Default
   - TransparentFX

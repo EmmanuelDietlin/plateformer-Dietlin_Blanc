@@ -12,9 +12,14 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private Toggle particlesFeedbacksToggle;
     [SerializeField] private Toggle soundFeedbacksToggle;
     [SerializeField] private Toggle playerDeformationFeedbacksToggle;
+    [SerializeField] private Toggle damageFeedbacksToggle;
 
     [SerializeField] private GameObject playerSprite;
 
+    [SerializeField] private float damageEffectDuration;
+    [SerializeField] private float blinkDelay;
+
+    private float blinkTimer;
 
     private ParticleSystem jumpParticles;
     private ParticleSystem wallParticles;
@@ -25,6 +30,7 @@ public class Feedbacks : MonoBehaviour
     private bool particleFeedbacksEnabled;
     private bool soundFeedbacksEnabled;
     private bool playerDeformationFeedbacksEnabled;
+    private bool damageFeedbacksEnabled;
 
     private Vector2 refScale;
 
@@ -36,6 +42,7 @@ public class Feedbacks : MonoBehaviour
         particleFeedbacksEnabled = true;
         soundFeedbacksEnabled = true;
         playerDeformationFeedbacksEnabled = true;
+        damageFeedbacksEnabled = true;
 
         jumpParticles = gameObject.GetComponent<ParticleSystem>();
         jumpParticles.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 20) });
@@ -50,6 +57,13 @@ public class Feedbacks : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void OnDamageTaken()
+    {
+        if (!damageFeedbacksEnabled) return;
+        blinkTimer = 0;
+        StartCoroutine(BlinkEffect());
     }
 
     public void JumpParticles()
@@ -80,6 +94,7 @@ public class Feedbacks : MonoBehaviour
 
     public void Stretch(float maxXSpeed, float maxYSpeed)
     {
+        if (!playerDeformationFeedbacksEnabled) return;
         float maxX_scale = speedStretchValues.x, maxY_scale = speedStretchValues.y;
         float newXScale = LinearScale(maxX_scale, refScale.x, maxXSpeed, Mathf.Abs(player.Speed.x));
         float newYScale = ExponentialScale(maxY_scale, refScale.y, maxYSpeed, Mathf.Abs(player.Speed.y));
@@ -102,6 +117,11 @@ public class Feedbacks : MonoBehaviour
         playerDeformationFeedbacksEnabled = playerDeformationFeedbacksToggle.isOn;
     }
 
+    public void OnDamageFeedbacksChange()
+    {
+        damageFeedbacksEnabled = damageFeedbacksToggle.isOn;
+    }
+
 
     private float LinearScale(float smax, float sref, float vmax, float v)
     {
@@ -113,6 +133,28 @@ public class Feedbacks : MonoBehaviour
         float a = (smax - sref) / (Mathf.Exp(vmax / 10) - 1);
         return (Mathf.Exp(v/10) - 1) * a + sref;
     }
+
+    private IEnumerator BlinkEffect()
+    { 
+        while (blinkTimer < damageEffectDuration)
+        {
+            int status = (int)(blinkTimer / blinkDelay);
+            blinkTimer += Time.deltaTime;
+            Debug.Log(blinkTimer);
+            Debug.Log(status);
+            if (status % 2 == 0)
+            {
+                playerSprite.SetActive(true);
+            } else
+            {
+                playerSprite.SetActive(false);
+            }
+            yield return null;
+        }
+        if (!playerSprite.activeSelf) 
+            playerSprite.SetActive(true);
+        yield return null;
+    } 
 
 
 

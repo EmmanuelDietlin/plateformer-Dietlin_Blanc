@@ -199,6 +199,7 @@ public class PlayerController : MonoBehaviour
         {
             isBouncing = false;
             speed.y = 0;
+            if (prevGroundedStatus != isGrounded) transform.position += new Vector3(0, -.02f, 0);
         }
         if ((Input.GetAxisRaw("Jump") > 0 || (jumpBufferTime > 0f && isGrounded)) && mayJumpMidAir && jumpsLeft > 0)
         {
@@ -279,6 +280,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log(collision.tag);
         ColliderDistance2D distance = boxCollider.Distance(collision);
         if (distance.normal.x != 0)
         {
@@ -289,6 +291,7 @@ public class PlayerController : MonoBehaviour
             transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
         }
         if (collision.tag.Equals("HardPlatform")) speed.y = 0;
+        if (collision.tag.Equals("Spike")) feedbacks.OnDamageTaken();
     }
 
 
