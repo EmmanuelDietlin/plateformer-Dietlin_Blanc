@@ -228,7 +228,7 @@ public class PlayerController : MonoBehaviour
         }
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
-        feedbacks.Stretch(2, 2, currentMaxXSpeed, horizontalAirSpeed);
+        feedbacks.Stretch(currentMaxXSpeed + dashValue, verticalMaxSpeed);
 
     }
 

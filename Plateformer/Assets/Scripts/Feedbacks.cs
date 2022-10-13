@@ -6,25 +6,29 @@ using UnityEngine.UI;
 
 public class Feedbacks : MonoBehaviour
 {
-    [SerializeField] private Vector2 jumpStretchValues;
     [SerializeField] private Vector2 landingStretchValues;
+    [SerializeField] private Vector2 speedStretchValues;
 
     [SerializeField] private Toggle particlesFeedbacksToggle;
     [SerializeField] private Toggle soundFeedbacksToggle;
     [SerializeField] private Toggle playerDeformationFeedbacksToggle;
+
+    [SerializeField] private GameObject playerSprite;
 
 
     private ParticleSystem jumpParticles;
     private ParticleSystem wallParticles;
 
     private PlayerController player;
-    private BoxCollider2D collider;
+    private BoxCollider2D boxCollider;
 
     private bool particleFeedbacksEnabled;
     private bool soundFeedbacksEnabled;
     private bool playerDeformationFeedbacksEnabled;
 
     private Vector2 refScale;
+
+    public enum sounds { damage, victory, bounce, succion}
 
     // Start is called before the first frame update
     void Start()
@@ -34,12 +38,12 @@ public class Feedbacks : MonoBehaviour
         playerDeformationFeedbacksEnabled = true;
 
         jumpParticles = gameObject.GetComponent<ParticleSystem>();
-        jumpParticles.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.01f, 20) });
+        jumpParticles.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 20) });
         jumpParticles.Play();
 
         player = gameObject.GetComponent<PlayerController>();
         refScale = transform.localScale;
-        collider = gameObject.GetComponent<BoxCollider2D>();
+        boxCollider = gameObject.GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -51,7 +55,6 @@ public class Feedbacks : MonoBehaviour
     public void JumpParticles()
     {
         if (!particleFeedbacksEnabled) return;
-        Debug.Log("doot");
         jumpParticles.Play();
     }
 
@@ -75,11 +78,15 @@ public class Feedbacks : MonoBehaviour
         if (!playerDeformationFeedbacksEnabled) return;
     }
 
-    public void Stretch(float maxX_scale, float maxY_scale, float maxXSpeed, float maxYSpeed)
+    public void Stretch(float maxXSpeed, float maxYSpeed)
     {
-        transform.localScale = new Vector3(newScale(maxX_scale, refScale.x, maxXSpeed, Mathf.Abs(player.Speed.x)),
-            newScale(maxY_scale, refScale.y, maxYSpeed, Mathf.Abs(player.Speed.y)));
-        //collider.size = refScale;
+        float maxX_scale = speedStretchValues.x, maxY_scale = speedStretchValues.y;
+        Debug.Log(maxX_scale);
+        Debug.Log(maxY_scale);
+        float newXScale = LinearScale(maxX_scale, refScale.x, maxXSpeed, Mathf.Abs(player.Speed.x));
+        float newYScale = ExponentialScale(maxY_scale, refScale.y, maxYSpeed, Mathf.Abs(player.Speed.y));
+        Debug.Log(newYScale);
+        playerSprite.transform.localScale = new Vector3(newXScale,newYScale);
     }
 
 
@@ -98,11 +105,17 @@ public class Feedbacks : MonoBehaviour
         playerDeformationFeedbacksEnabled = playerDeformationFeedbacksToggle.isOn;
     }
 
-    private float newScale(float smax, float sref, float vmax, float v)
+
+    private float LinearScale(float smax, float sref, float vmax, float v)
     {
         return (smax - sref) * v / vmax + sref;
     }
 
+    private float ExponentialScale(float smax, float sref, float vmax, float v)
+    {
+        float a = (smax - sref) / (Mathf.Exp(vmax / 10) - 1);
+        return (Mathf.Exp(v/10) - 1) * a + sref;
+    }
 
 
 
