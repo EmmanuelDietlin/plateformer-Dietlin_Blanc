@@ -109,6 +109,18 @@ public class PlayerController : MonoBehaviour
         feedbacks = gameObject.GetComponent<Feedbacks>();
     }
 
+    /*
+     * Pour implémenter les pentes :
+     * - appliquer un raycast vertical dans la direction de déplacement
+     * - récupérer la normale de la surface
+     * - Vecteur de direction de déplacement = rotation de 90° de la normale (sens horaire ou antihoraire ?)
+     * - se déplacer selon cette direction 
+     * Remarque : n'appliquer cela que pour les mouvements horizontaux
+     * Remarque bis : rendre la pente max modifiable dans l'inspecteur ainsi que l'éventuelle 
+     * facteur d'adhésion à la pente (i.e. le personnage glisse en arrière)
+     */
+
+
     // Update is called once per frame
     void Update()
     {
@@ -116,12 +128,12 @@ public class PlayerController : MonoBehaviour
         var curTime = Time.time;
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
         Vector3 boxScale = new Vector3(transform.localScale.x * 0.9f, transform.localScale.y * .69f, transform.localScale.z);
-        groundCollider2D = Physics2D.OverlapBox(groundedBoxCheck, boxScale, 0, GroundLayer);
+        groundCollider2D = Physics2D.OverlapBox(groundedBoxCheck, boxScale, transform.rotation.z, GroundLayer);
         isGrounded = groundCollider2D != null;
         platformTag = isGrounded ? groundCollider2D.tag : "";
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
-        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, WallLayer);
-        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, WallLayer);
+        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), transform.rotation.z, WallLayer);
+        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), transform.rotation.z, WallLayer);
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
         if (isGrounded && Input.GetAxisRaw("Sprint") > 0) currentMaxXSpeed = HorizontalGroundSpeed * SprintSpeedFactor;
@@ -239,7 +251,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // Gizmos.DrawCube((Vector2)transform.position + new Vector2(0, -.17f), new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z));
+        //Gizmos.DrawCube((Vector2)transform.position + new Vector2(0, -.17f), new Vector3(transform.localScale.x, transform.localScale.y * .69f, transform.localScale.z));
         //Gizmos.DrawCube((Vector2)transform.position + new Vector2(-.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y, transform.localScale.z));
         //Gizmos.DrawCube((Vector2)transform.position + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y, transform.localScale.z));
     }
