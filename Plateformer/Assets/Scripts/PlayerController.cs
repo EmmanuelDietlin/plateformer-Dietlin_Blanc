@@ -296,6 +296,7 @@ public class PlayerController : MonoBehaviour
         }
         if (collision.tag.Equals("HardPlatform")) speed.y = 0;
         if (collision.tag.Equals("Spike")) feedbacks.OnDamageTaken();
+        if (collision.tag.Equals("Finish")) feedbacks.OnVictory();
     }
 
 

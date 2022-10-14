@@ -19,6 +19,15 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private float damageEffectDuration;
     [SerializeField] private float blinkDelay;
 
+    [Header("Sound")]
+    [Space(5)]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip victorySound;
+    [SerializeField] private AudioClip damageSound;
+    [SerializeField] private AudioClip succionSound;
+    [SerializeField] private AudioClip bounceSound;
+    [Space(10)]
+
     private float blinkTimer;
 
     private ParticleSystem jumpParticles;
@@ -35,6 +44,7 @@ public class Feedbacks : MonoBehaviour
     private Vector2 refScale;
 
     public enum sounds { damage, victory, bounce, succion}
+    
 
     // Start is called before the first frame update
     void Start()
@@ -75,21 +85,39 @@ public class Feedbacks : MonoBehaviour
     public void WallParticles()
     {
         if (!particleFeedbacksEnabled) return;
+        //TODO: particules mur
     }
 
-    public void PlaySound()
+    public void PlaySound(sounds s)
     {
         if (!soundFeedbacksEnabled) return;
+        switch (s) {
+            case sounds.damage:
+                audioSource.clip = damageSound;
+                break;
+            case sounds.bounce:
+                audioSource.clip = bounceSound;
+                break;
+            case sounds.victory:
+                audioSource.clip = victorySound;
+                break;
+            case sounds.succion:
+                audioSource.clip = succionSound;
+                break;
+        }
+        audioSource.Play();
     }
 
     public void RemanentEffectActivate()
     {
         if (!playerDeformationFeedbacksEnabled) return;
+        //TODO remanence
     }
 
     public void RemanentEffectDeactivate()
     {
         if (!playerDeformationFeedbacksEnabled) return;
+        //TODO remanence
     }
 
     public void Stretch(float maxXSpeed, float maxYSpeed)
@@ -120,6 +148,11 @@ public class Feedbacks : MonoBehaviour
     public void OnDamageFeedbacksChange()
     {
         damageFeedbacksEnabled = damageFeedbacksToggle.isOn;
+    }
+
+    public void OnVictory()
+    {
+        //TODO victoire
     }
 
 

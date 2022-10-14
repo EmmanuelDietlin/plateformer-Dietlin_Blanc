@@ -35,6 +35,8 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private TMP_InputField groundSpeedInput;
     [SerializeField] private TextMeshProUGUI inertia;
     [SerializeField] private Slider inertiaSlider;
+    [SerializeField] private TextMeshProUGUI sprint;
+    [SerializeField] private Slider sprintSlider;
     [Space(10)]
 
     [Header("Dash")]
@@ -101,6 +103,8 @@ public class GUIManager : MonoBehaviour
         groundSpeed.text = player.HorizontalGroundSpeed.ToString();
         inertia.text = player.Inertia.ToString();
         inertiaSlider.value = player.Inertia;
+        sprint.text = player.SprintSpeedFactor.ToString();
+        sprintSlider.value = player.SprintSpeedFactor;
 
         dashValue.text = player.DashValue.ToString();
         dashBrake.text = player.DashBrake.ToString();
@@ -257,6 +261,12 @@ public class GUIManager : MonoBehaviour
     {
         player.LongJumpThreshold = longJumpThresholdSlider.value;
         longJumpThreshold.text = longJumpThresholdSlider.value.ToString();  
+    }
+
+    public void OnSprintValueChange()
+    {
+        player.SprintSpeedFactor = sprintSlider.value;
+        sprint.text = sprintSlider.value.ToString();
     }
 
     public void OnFeedbackEnableChange()
