@@ -42,17 +42,18 @@ public class MainMenuManager : MonoBehaviour
         }
         if (Input.GetAxisRaw("Horizontal") != 0 && timer > changeButtonTimer) {
             timer = 0f;
+            int dir = (int)Input.GetAxisRaw("Horizontal");
             if (mainMenu.activeSelf)
             {
                 EventSystem.current.SetSelectedGameObject(null);
-                mainMenuSelectedButton = (mainMenuSelectedButton + 1) % mainMenuButtons.Length;
+                mainMenuSelectedButton = (mainMenuSelectedButton + dir) % mainMenuButtons.Length;
                 EventSystem.current.SetSelectedGameObject(mainMenuButtons[mainMenuSelectedButton].gameObject);
 
             }
             else
             {
                 EventSystem.current.SetSelectedGameObject(null);
-                controlsMenuSelectedButton = (controlsMenuSelectedButton + 1) % controlsMenuButtons.Length;
+                controlsMenuSelectedButton = (controlsMenuSelectedButton + dir) % controlsMenuButtons.Length;
                 EventSystem.current.SetSelectedGameObject(controlsMenuButtons[controlsMenuSelectedButton].gameObject);
             }
         }

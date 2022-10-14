@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class GUIManager : MonoBehaviour
 {
@@ -72,13 +73,20 @@ public class GUIManager : MonoBehaviour
 
     private PlayerController player;
     private Toggle[] feedbackCheckboxToggles;
+    private Button[] pauseMenuButtons;
+    private int currentSelectedPauseButton;
 
     private float pauseMenuTimer = .5f;
+    private float changeButtonTimer = .3f;
     private float time;
+    private float buttonTime;
 
     // Start is called before the first frame update
     void Start()
     {
+        currentSelectedPauseButton = 1;
+        buttonTime = 0f;
+        pauseMenuButtons = pauseMenu.GetComponentsInChildren<Button>();
         modificationMenu.SetActive(false);
         feedbacksMenu.SetActive(false);
         player = FindObjectOfType<PlayerController>();
@@ -118,13 +126,24 @@ public class GUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if ( buttonTime < 5f) buttonTime += Time.unscaledDeltaTime;
         if (Input.GetAxisRaw("Pause") > 0 && Time.unscaledTime > pauseMenuTimer + time)
         {
             Debug.Log("pouic");
             time = Time.unscaledTime;
             if (pauseMenu.activeSelf) OnResume();
             else OnPause();
+        }
+        if (pauseMenu.activeSelf)
+        {
+            if (Input.GetAxisRaw("Horizontal") != 0 && buttonTime > changeButtonTimer)
+            {
+                int dir = (int)Input.GetAxisRaw("Horizontal");
+                buttonTime = 0f;
+                EventSystem.current.SetSelectedGameObject(null);
+                currentSelectedPauseButton = (currentSelectedPauseButton + dir) % pauseMenuButtons.Length;
+                EventSystem.current.SetSelectedGameObject(pauseMenuButtons[currentSelectedPauseButton].gameObject);
+            }
         }
     }
 
@@ -250,13 +269,17 @@ public class GUIManager : MonoBehaviour
 
     public void OnPause()
     {
+        currentSelectedPauseButton = 1;
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(pauseMenuButtons[currentSelectedPauseButton].gameObject);
 
     }
 
     public void OnResume()
     {
+        EventSystem.current.SetSelectedGameObject(null);
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
     }
