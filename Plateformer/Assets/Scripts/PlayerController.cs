@@ -35,6 +35,8 @@ public class PlayerController : MonoBehaviour
     public float HorizontalGroundSpeed { get { return this.horizontalGroundSpeed; }  set { this.horizontalGroundSpeed = value; } }
     [SerializeField, Range(0,30)] private float inertia;
     public float Inertia { get { return this.inertia; }  set { this.inertia = value; } }
+    [SerializeField, Range(1,3)] private float sprintSpeedFactor;
+    public float SprintSpeedFactor { get { return this.sprintSpeedFactor; } set { this.sprintSpeedFactor = value; } }
     [Space(10)]
 
     [Header("Air Movement")]
@@ -72,6 +74,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask wallLayer;
     public LayerMask WallLayer { get { return this.wallLayer; }  set { this.wallLayer = value; } }
     [Space(10)]
+
 
 
 
@@ -121,6 +124,7 @@ public class PlayerController : MonoBehaviour
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + new Vector2(.26f, 0f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), 0, WallLayer);
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
+        if (isGrounded && Input.GetAxisRaw("Sprint") > 0) currentMaxXSpeed = HorizontalGroundSpeed * SprintSpeedFactor;
 
         if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) 
             jumpBufferTime = JumpTimeTolerance;
