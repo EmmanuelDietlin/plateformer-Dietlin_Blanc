@@ -98,6 +98,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 startPosition;
     private Feedbacks feedbacks;
     private bool prevGroundedStatus;
+    private Vector2 horizontalMovDirection;
     // Start is called before the first frame update
     void Start()
     {
@@ -124,6 +125,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RaycastHit2D ground = Physics2D.Raycast(transform.position, Vector2.down, boxCollider.bounds.extents.y + .1f, groundLayer);
+        Debug.Log(ground.normal);
+        horizontalMovDirection = Quaternion.Euler(0, 0, 90) * ground.normal;
+        //Debug.Log(horizontalMovDirection);
         prevGroundedStatus = isGrounded;
         var curTime = Time.time;
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
@@ -143,7 +148,10 @@ public class PlayerController : MonoBehaviour
         jumpBufferTime -= Time.deltaTime;
         if (isGrounded)
         {
-            if (isGrounded != prevGroundedStatus) feedbacks.JumpParticles();
+            if (isGrounded != prevGroundedStatus)
+            {
+                feedbacks.JumpParticles();
+            }
             jumpsLeft = JumpNumber;
         }
         else if (!isGrounded && jumpsLeft == JumpNumber && groundCollider2D != null && groundCollider2D.transform.position.y > transform.position.y)
@@ -243,6 +251,40 @@ public class PlayerController : MonoBehaviour
         {
             Dash();
         }
+
+        if (!isGrounded)
+        {
+            Vector2 rightEdge = (Vector2)transform.position + new Vector2(boxCollider.bounds.extents.x, -boxCollider.bounds.extents.y);
+            Vector2 leftEdge = (Vector2)transform.position + new Vector2(-boxCollider.bounds.extents.x, -boxCollider.bounds.extents.y);
+            Vector2 bottomCenter = (Vector2)transform.position + new Vector2(0, -boxCollider.bounds.extents.y);
+            RaycastHit2D rightHit = Physics2D.Raycast(rightEdge, Vector2.down, Mathf.Abs(speed.y) * Time.deltaTime, groundLayer);
+            RaycastHit2D leftHit = Physics2D.Raycast(leftEdge, Vector2.down, Mathf.Abs(speed.y) * Time.deltaTime, groundLayer);
+            Debug.DrawRay(leftEdge, Vector2.down * (Mathf.Abs(speed.y) * Time.deltaTime), Color.white, 1);
+            Debug.DrawRay(rightEdge, Vector2.down * (Mathf.Abs(speed.y) * Time.deltaTime), Color.white, 1);
+            if (rightHit.collider != null && rightHit.collider.tag.Equals("Slope"))
+            {
+                float angle = Vector2.Angle(Vector2.down, -rightHit.normal);
+                Debug.Log(angle);
+                transform.RotateAround(leftEdge, -Vector3.back, angle);
+                bottomCenter = Quaternion.Euler(0, 0, angle) * bottomCenter;
+                RaycastHit2D slope = Physics2D.Raycast(bottomCenter, -transform.up, 1f, groundLayer);
+                transform.Translate(-slope.normal * slope.distance, Space.Self);
+            }
+            else if (leftHit.collider != null && leftHit.collider.tag.Equals("Slope"))
+            {
+                float angle = Vector2.Angle(Vector2.down, -leftHit.normal);
+                Debug.Log(angle);
+                transform.RotateAround(rightEdge, -Vector3.back, angle);
+                bottomCenter = Quaternion.Euler(0, 0, angle) * bottomCenter;
+                RaycastHit2D slope = Physics2D.Raycast(bottomCenter, -transform.up, 1f, groundLayer);
+                transform.Translate(-slope.normal * slope.distance, Space.Self);
+            } else
+            {
+                transform.rotation = Quaternion.identity;
+            }
+            
+        }
+
         transform.position += (Vector3)speed * Time.deltaTime;
         ApplyPhysics();
         feedbacks.Stretch(currentMaxXSpeed + dashValue, verticalMaxSpeed);
@@ -296,19 +338,32 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.tag);
         ColliderDistance2D distance = boxCollider.Distance(collision);
-        if (distance.normal.x != 0)
+        if (!collision.tag.Equals("Slope"))
         {
-            transform.position += new Vector3(distance.normal.x * distance.distance, 0, 0);
-        }
-        if (distance.normal.y != 0)
+            if (distance.normal.x != 0)
+            {
+                transform.position += new Vector3(distance.normal.x * distance.distance, 0, 0);
+            }
+            if (distance.normal.y != 0)
+            {
+                transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
+            }
+            if (collision.tag.Equals("HardPlatform")) speed.y = 0;
+            if (collision.tag.Equals("Spike")) feedbacks.OnDamageTaken();
+            if (collision.tag.Equals("Finish")) feedbacks.OnVictory();
+        } else
         {
-            transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
+            transform.position += (Vector3)(distance.normal * distance.distance);
         }
-        if (collision.tag.Equals("HardPlatform")) speed.y = 0;
-        if (collision.tag.Equals("Spike")) feedbacks.OnDamageTaken();
-        if (collision.tag.Equals("Finish")) feedbacks.OnVictory();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag.Equals("Slope"))
+        {
+            transform.rotation = Quaternion.identity;
+        }
     }
 
 

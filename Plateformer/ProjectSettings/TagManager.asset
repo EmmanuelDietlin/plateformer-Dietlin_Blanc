@@ -8,6 +8,7 @@ TagManager:
   - SoftPlatform
   - BouncyPlatform
   - Spike
+  - Slope
   layers:
   - Default
   - TransparentFX
