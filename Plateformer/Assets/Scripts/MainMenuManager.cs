@@ -17,11 +17,14 @@ public class MainMenuManager : MonoBehaviour
     private int controlsMenuSelectedButton;
     private float changeButtonTimer = .3f;
     private float timer;
+    private float quitDelay = .3f;
+    private float quitTimer;
 
     // Start is called before the first frame update
     void Start()
     {
         timer = 0f;
+        quitTimer = 0f;
         mainMenuButtons = mainMenu.GetComponentsInChildren<Button>();
         controlsMenuButtons = controlsMenu.GetComponentsInChildren<Button>();
         Debug.Log(mainMenuButtons.Length);
@@ -36,6 +39,7 @@ public class MainMenuManager : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
+        quitTimer += Time.deltaTime;
         if (Input.GetAxisRaw("Dash") > 0 && controlsMenu.activeSelf)
         {
             SwitchMenu();
@@ -56,6 +60,12 @@ public class MainMenuManager : MonoBehaviour
                 controlsMenuSelectedButton = (controlsMenuSelectedButton + dir) % controlsMenuButtons.Length;
                 EventSystem.current.SetSelectedGameObject(controlsMenuButtons[controlsMenuSelectedButton].gameObject);
             }
+        }
+        if (Input.GetAxisRaw("Cancel") > 0 && quitTimer > quitDelay)
+        {
+            quitTimer = 0f;
+            if (controlsMenu.activeSelf) SwitchMenu();
+            else Application.Quit();
         }
     }
 

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Threading;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.Rendering;
 using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
