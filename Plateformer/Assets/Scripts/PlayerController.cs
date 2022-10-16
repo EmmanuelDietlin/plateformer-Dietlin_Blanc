@@ -99,6 +99,8 @@ public class PlayerController : MonoBehaviour
     private Feedbacks feedbacks;
     private bool prevGroundedStatus;
     private Vector2 horizontalMovDirection;
+    private float currentHorizontalSpeed;
+    private bool isOnSlope;
     // Start is called before the first frame update
     void Start()
     {
@@ -108,6 +110,7 @@ public class PlayerController : MonoBehaviour
         isGrabingWall = false;
         startPosition = transform.position;
         feedbacks = gameObject.GetComponent<Feedbacks>();
+        isOnSlope = false;
     }
 
     /*
@@ -125,10 +128,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        RaycastHit2D ground = Physics2D.Raycast(transform.position, Vector2.down, boxCollider.bounds.extents.y + .1f, groundLayer);
-        Debug.Log(ground.normal);
-        horizontalMovDirection = Quaternion.Euler(0, 0, 90) * ground.normal;
-        //Debug.Log(horizontalMovDirection);
+        RaycastHit2D ground = Physics2D.Raycast(transform.position, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
+        horizontalMovDirection = Quaternion.Euler(0, 0, -90) * ground.normal;
+        Debug.DrawRay(transform.position, Vector2.down * (boxCollider.bounds.extents.y + .5f), Color.white, 1);
+        if (ground.collider == null || (ground.collider != null && !ground.collider.tag.Equals("Slope")))
+            isOnSlope = false;
+            
+
         prevGroundedStatus = isGrounded;
         var curTime = Time.time;
         Vector2 groundedBoxCheck = (Vector2)transform.position + new Vector2(0, -.17f);
@@ -142,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
         if (isGrounded && Input.GetAxisRaw("Sprint") > 0) currentMaxXSpeed = HorizontalGroundSpeed * SprintSpeedFactor;
-
+        
         if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0) 
             jumpBufferTime = JumpTimeTolerance;
         jumpBufferTime -= Time.deltaTime;
@@ -204,10 +210,16 @@ public class PlayerController : MonoBehaviour
         } 
         else 
         {
-            if (Mathf.Abs(speed.x) >= currentMaxXSpeed) speed.x *= Mathf.Max((1 - DashBrake * Time.deltaTime), 0);
+
+            if (Mathf.Abs(currentHorizontalSpeed) >= currentMaxXSpeed) currentHorizontalSpeed *= Mathf.Max((1 - DashBrake * Time.deltaTime), 0);
             
-            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - Inertia*Time.deltaTime),0);
-            else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : (Input.GetAxis("Horizontal") * currentMaxXSpeed * Vector3.right).x;
+            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) currentHorizontalSpeed *= Mathf.Max((1 - Inertia*Time.deltaTime),0);
+            else currentHorizontalSpeed = Mathf.Abs(currentHorizontalSpeed) > currentMaxXSpeed ? currentHorizontalSpeed : Input.GetAxis("Horizontal") * currentMaxXSpeed;
+
+            if (platformTag.Equals("Slope"))
+                speed = currentHorizontalSpeed * horizontalMovDirection;
+            else
+                speed.x = currentHorizontalSpeed;
 
             if (isGrabingWall)
                 wallGrabStopStartTime = Time.time;
@@ -252,41 +264,20 @@ public class PlayerController : MonoBehaviour
             Dash();
         }
 
-        if (!isGrounded)
+        if (ground.collider != null)
         {
-            Vector2 rightEdge = (Vector2)transform.position + new Vector2(boxCollider.bounds.extents.x, -boxCollider.bounds.extents.y);
-            Vector2 leftEdge = (Vector2)transform.position + new Vector2(-boxCollider.bounds.extents.x, -boxCollider.bounds.extents.y);
-            Vector2 bottomCenter = (Vector2)transform.position + new Vector2(0, -boxCollider.bounds.extents.y);
-            RaycastHit2D rightHit = Physics2D.Raycast(rightEdge, Vector2.down, Mathf.Abs(speed.y) * Time.deltaTime, groundLayer);
-            RaycastHit2D leftHit = Physics2D.Raycast(leftEdge, Vector2.down, Mathf.Abs(speed.y) * Time.deltaTime, groundLayer);
-            Debug.DrawRay(leftEdge, Vector2.down * (Mathf.Abs(speed.y) * Time.deltaTime), Color.white, 1);
-            Debug.DrawRay(rightEdge, Vector2.down * (Mathf.Abs(speed.y) * Time.deltaTime), Color.white, 1);
-            if (rightHit.collider != null && rightHit.collider.tag.Equals("Slope"))
-            {
-                float angle = Vector2.Angle(Vector2.down, -rightHit.normal);
-                Debug.Log(angle);
-                transform.RotateAround(leftEdge, -Vector3.back, angle);
-                bottomCenter = Quaternion.Euler(0, 0, angle) * bottomCenter;
-                RaycastHit2D slope = Physics2D.Raycast(bottomCenter, -transform.up, 1f, groundLayer);
-                transform.Translate(-slope.normal * slope.distance, Space.Self);
-            }
-            else if (leftHit.collider != null && leftHit.collider.tag.Equals("Slope"))
-            {
-                float angle = Vector2.Angle(Vector2.down, -leftHit.normal);
-                Debug.Log(angle);
-                transform.RotateAround(rightEdge, -Vector3.back, angle);
-                bottomCenter = Quaternion.Euler(0, 0, angle) * bottomCenter;
-                RaycastHit2D slope = Physics2D.Raycast(bottomCenter, -transform.up, 1f, groundLayer);
-                transform.Translate(-slope.normal * slope.distance, Space.Self);
-            } else
-            {
-                transform.rotation = Quaternion.identity;
-            }
-            
+            float angle = Vector2.Angle(Vector2.right, -ground.normal);
+            transform.rotation = Quaternion.Euler(0, 0, -angle);
+        } else
+        {
+            transform.rotation = Quaternion.identity;
         }
 
         transform.position += (Vector3)speed * Time.deltaTime;
-        ApplyPhysics();
+        if (!platformTag.Equals("Slope"))
+        {
+            ApplyPhysics();
+        } 
         feedbacks.Stretch(currentMaxXSpeed + dashValue, verticalMaxSpeed);
 
     }
@@ -316,7 +307,7 @@ public class PlayerController : MonoBehaviour
     {
         dashStartTime = Time.time;
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        speed.x += DashValue * movDirX * currentMaxXSpeed;
+        currentHorizontalSpeed += DashValue * movDirX * currentMaxXSpeed;
     }
 
     private void WallJump()
