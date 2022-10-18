@@ -21,7 +21,6 @@ public class Feedbacks : MonoBehaviour
 
     [Header("Sound")]
     [Space(5)]
-    [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip victorySound;
     [SerializeField] private AudioClip damageSound;
     [SerializeField] private AudioClip succionSound;
@@ -41,7 +40,11 @@ public class Feedbacks : MonoBehaviour
     private bool playerDeformationFeedbacksEnabled;
     private bool damageFeedbacksEnabled;
 
+    private AudioSource audioSource;
+
     private Vector2 refScale;
+
+    private float audioTimer;
 
     public enum sounds { damage, victory, bounce, succion}
     
@@ -53,6 +56,9 @@ public class Feedbacks : MonoBehaviour
         soundFeedbacksEnabled = true;
         playerDeformationFeedbacksEnabled = true;
         damageFeedbacksEnabled = true;
+        audioSource = gameObject.GetComponent<AudioSource>();
+        audioTimer = 20f;
+        audioSource.clip = null;
 
         jumpParticles = gameObject.GetComponent<ParticleSystem>();
         jumpParticles.emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0f, 20) });
@@ -66,7 +72,7 @@ public class Feedbacks : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (audioTimer < 20f) audioTimer += Time.deltaTime;
     }
 
     public void OnDamageTaken()
@@ -74,6 +80,7 @@ public class Feedbacks : MonoBehaviour
         if (!damageFeedbacksEnabled) return;
         blinkTimer = 0;
         StartCoroutine(BlinkEffect());
+        PlaySound(sounds.damage);
     }
 
     public void JumpParticles()
@@ -94,18 +101,26 @@ public class Feedbacks : MonoBehaviour
         switch (s) {
             case sounds.damage:
                 audioSource.clip = damageSound;
+                audioSource.volume = .3f;
                 break;
             case sounds.bounce:
                 audioSource.clip = bounceSound;
+                audioSource.volume = .2f;
                 break;
             case sounds.victory:
                 audioSource.clip = victorySound;
+                audioSource.volume = .1f;
                 break;
             case sounds.succion:
                 audioSource.clip = succionSound;
+                audioSource.volume = .1f;
                 break;
         }
-        audioSource.Play();
+        if (s == sounds.bounce || audioTimer > audioSource.clip.length)
+        {
+            audioTimer = 0f;
+            audioSource.Play();
+        }
     }
 
     public void RemanentEffectActivate()
@@ -152,7 +167,7 @@ public class Feedbacks : MonoBehaviour
 
     public void OnVictory()
     {
-        //TODO victoire
+        PlaySound(sounds.victory);
     }
 
 

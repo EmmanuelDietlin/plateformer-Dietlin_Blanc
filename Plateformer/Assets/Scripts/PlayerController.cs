@@ -150,6 +150,7 @@ public class PlayerController : MonoBehaviour
         {
             isBouncing = false;
             speed.y = PlatformClipSpeed;
+            feedbacks.PlaySound(Feedbacks.sounds.succion);
         }
         else if (isCollidingWallRight && isCollidingWallLeft)
         {
@@ -218,12 +219,12 @@ public class PlayerController : MonoBehaviour
             isGrabingWall = false;
         }
       
-        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -.5f)
+        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -5f)
         {
             isBouncing = true;
             Bounce();
         } 
-        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && Mathf.Abs(speed.y) < .5f))
+        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f))
         {
             isBouncing = false;
             if (!platformTag.Equals("Slope")) speed.y = 0;
@@ -317,6 +318,7 @@ public class PlayerController : MonoBehaviour
     private void Bounce()
     {
         speed.y = Mathf.Min(speed.y * BouncyPlatformBounciness * -1f / Mathf.Sqrt(FallGravityFactor), VerticalMaxSpeed / Mathf.Sqrt(FallGravityFactor));
+        feedbacks.PlaySound(Feedbacks.sounds.bounce);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
