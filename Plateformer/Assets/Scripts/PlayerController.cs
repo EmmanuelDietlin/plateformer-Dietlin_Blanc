@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
     [Space(4)]
     [SerializeField] private float horizontalGroundSpeed;
     public float HorizontalGroundSpeed { get { return this.horizontalGroundSpeed; }  set { this.horizontalGroundSpeed = value; } }
-    [SerializeField, Range(0,30)] private float inertia;
-    public float Inertia { get { return this.inertia; }  set { this.inertia = value; } }
+    [SerializeField, Range(0,30)] private float brakeForce;
+    public float BrakeForce { get { return this.brakeForce; }  set { this.brakeForce = value; } }
     [SerializeField, Range(1,3)] private float sprintSpeedFactor;
     public float SprintSpeedFactor { get { return this.sprintSpeedFactor; } set { this.sprintSpeedFactor = value; } }
     [Space(10)]
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour
         else if (isCollidingWallRight && isCollidingWallLeft)
         {
             isBouncing = false;
-            feedbacks.PlaySound(Feedbacks.sounds.succion);
+            if (platformTag.Equals("SoftPlatform")) feedbacks.PlaySound(Feedbacks.sounds.succion);
             //transform.position = startPosition;
         }
         else if (isCollidingWallRight)
@@ -199,7 +199,7 @@ public class PlayerController : MonoBehaviour
 
             if (Mathf.Abs(speed.x) >= currentMaxXSpeed) speed.x *= Mathf.Max((1 - DashBrake * Time.deltaTime), 0);
             
-            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - Inertia*Time.deltaTime),0);
+            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - BrakeForce * Time.deltaTime),0);
             else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : Input.GetAxis("Horizontal") * currentMaxXSpeed;
 
             if (platformTag.Equals("Slope"))

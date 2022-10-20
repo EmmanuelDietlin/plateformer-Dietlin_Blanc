@@ -17,6 +17,7 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private GameObject playerSprite;
 
     [SerializeField] private float damageEffectDuration;
+    [SerializeField] private float vibrationEffectDuration;
     [SerializeField] private float blinkDelay;
 
     [Header("Sound")]
@@ -28,6 +29,7 @@ public class Feedbacks : MonoBehaviour
     [Space(10)]
 
     private float blinkTimer;
+    private float vibrationsTimer;
 
     private ParticleSystem jumpParticles;
     private ParticleSystem wallParticles;
@@ -81,6 +83,7 @@ public class Feedbacks : MonoBehaviour
         blinkTimer = 0;
         StartCoroutine(BlinkEffect());
         PlaySound(sounds.damage);
+
     }
 
     public void JumpParticles()
@@ -188,8 +191,6 @@ public class Feedbacks : MonoBehaviour
         {
             int status = (int)(blinkTimer / blinkDelay);
             blinkTimer += Time.deltaTime;
-            Debug.Log(blinkTimer);
-            Debug.Log(status);
             if (status % 2 == 0)
             {
                 playerSprite.SetActive(true);
@@ -203,6 +204,16 @@ public class Feedbacks : MonoBehaviour
             playerSprite.SetActive(true);
         yield return null;
     } 
+
+    private IEnumerator GamepadVibrations()
+    {
+        while (vibrationsTimer < damageEffectDuration)
+        {
+            vibrationsTimer += Time.deltaTime;
+            //if ()
+            yield return null;
+        }
+    }
 
 
 
