@@ -22,10 +22,10 @@ public class PlayerController : MonoBehaviour
     [Space(4)]
     [SerializeField, Range(0,20)] private float dashBrake;
     public float DashBrake { get { return this.dashBrake; }  set { this.dashBrake = value; } }
-    [SerializeField] private float dashValue;
-    public float DashValue { get { return this.dashValue; }  set { this.dashValue = value; } }
-    [SerializeField] private float dashTimer;
-    public float DashTimer { get { return this.dashTimer; }  set { this.dashTimer = value; } }
+    [SerializeField] private float dashForce;
+    public float DashForce { get { return this.dashForce; }  set { this.dashForce = value; } }
+    [SerializeField] private float dashDelay;
+    public float DashDelay { get { return this.dashDelay; }  set { this.dashDelay = value; } }
     [Space(10)]
 
     [Header("Ground Movement")]
@@ -155,6 +155,7 @@ public class PlayerController : MonoBehaviour
         else if (isCollidingWallRight && isCollidingWallLeft)
         {
             isBouncing = false;
+            feedbacks.PlaySound(Feedbacks.sounds.succion);
             //transform.position = startPosition;
         }
         else if (isCollidingWallRight)
@@ -253,7 +254,7 @@ public class PlayerController : MonoBehaviour
                 speed.y *= (LongJumpThreshold);
             }
         }
-        if (Input.GetAxisRaw("Dash") != 0 && (curTime > dashStartTime + DashTimer))
+        if (Input.GetAxisRaw("Dash") != 0 && (curTime > dashStartTime + dashDelay))
         {
             Dash();
         }
@@ -271,7 +272,7 @@ public class PlayerController : MonoBehaviour
         {
             ApplyPhysics();
         } 
-        feedbacks.Stretch(currentMaxXSpeed + dashValue, verticalMaxSpeed);
+        feedbacks.Stretch(currentMaxXSpeed + DashForce, verticalMaxSpeed);
 
     }
 
@@ -300,7 +301,7 @@ public class PlayerController : MonoBehaviour
     {
         dashStartTime = Time.time;
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        speed.x += DashValue * movDirX * currentMaxXSpeed;
+        speed.x += DashForce * movDirX * currentMaxXSpeed;
     }
 
     private void WallJump()
@@ -312,13 +313,13 @@ public class PlayerController : MonoBehaviour
             movDirX = -1;
         if(isCollidingWallLeft)
             movDirX = 1;
-        speed.x += DashValue * movDirX * currentMaxXSpeed;
+        speed.x += DashForce * movDirX * currentMaxXSpeed;
     }
 
     private void Bounce()
     {
         speed.y = Mathf.Min(speed.y * BouncyPlatformBounciness * -1f / Mathf.Sqrt(FallGravityFactor), VerticalMaxSpeed / Mathf.Sqrt(FallGravityFactor));
-        feedbacks.PlaySound(Feedbacks.sounds.bounce);
+        //feedbacks.PlaySound(Feedbacks.sounds.bounce);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

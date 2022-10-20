@@ -15,6 +15,8 @@ public class GUIManager : MonoBehaviour
     [SerializeField] private Toggle feedbacksEnable; 
     [SerializeField] private GameObject feedbacksCheckboxGroup;
     [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject controlsMenu;
+    [SerializeField] private Button controlsMenuButton;
     [Space(10)]
 
 
@@ -40,10 +42,10 @@ public class GUIManager : MonoBehaviour
     [Space(10)]
 
     [Header("Dash")]
-    [SerializeField] private TextMeshProUGUI dashValue;
-    [SerializeField] private TMP_InputField dashValueInput;
-    [SerializeField] private TextMeshProUGUI dashTimer;
-    [SerializeField] private TMP_InputField dashTimerInput;
+    [SerializeField] private TextMeshProUGUI dashForce;
+    [SerializeField] private TMP_InputField dashForceInput;
+    [SerializeField] private TextMeshProUGUI dashDelay;
+    [SerializeField] private TMP_InputField DashDelayInput;
     [SerializeField] private TextMeshProUGUI dashBrake;
     [SerializeField] private Slider dashBrakeSlider;
     [Space(10)]
@@ -106,9 +108,9 @@ public class GUIManager : MonoBehaviour
         sprint.text = player.SprintSpeedFactor.ToString();
         sprintSlider.value = player.SprintSpeedFactor;
 
-        dashValue.text = player.DashValue.ToString();
+        dashForce.text = player.DashForce.ToString();
         dashBrake.text = player.DashBrake.ToString();
-        dashTimer.text = player.DashTimer.ToString();
+        dashDelay.text = player.DashDelay.ToString();
         dashBrakeSlider.value = player.DashBrake;
 
         wallFriction.text = player.WallFriction.ToString();
@@ -199,14 +201,14 @@ public class GUIManager : MonoBehaviour
 
     public void OnDashValueChange()
     {
-        player.DashValue = (float)Convert.ToDouble(dashValueInput.text);
-        dashValue.text = dashValueInput.text;
+        player.DashForce = (float)Convert.ToDouble(dashForceInput.text);
+        dashForce.text = dashForceInput.text;
     }
 
     public void OnDashTimerChange()
     {
-        player.DashTimer = (float)Convert.ToDouble(dashTimerInput.text);
-        dashTimer.text = dashTimerInput.text;
+        player.DashDelay = (float)Convert.ToDouble(DashDelayInput.text);
+        dashDelay.text = DashDelayInput.text;
     }
 
     public void OnDashBrakeChange()
@@ -277,10 +279,19 @@ public class GUIManager : MonoBehaviour
         }
     }
 
+    public void OnControlsMenu()
+    {
+        pauseMenu.SetActive(false);
+        controlsMenu.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(controlsMenuButton.gameObject);
+    }
+
     public void OnPause()
     {
         currentSelectedPauseButton = 1;
         Time.timeScale = 0f;
+        controlsMenu.SetActive(false);
         pauseMenu.SetActive(true);
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(pauseMenuButtons[currentSelectedPauseButton].gameObject);

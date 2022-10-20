@@ -104,8 +104,8 @@ public class Feedbacks : MonoBehaviour
                 audioSource.volume = .3f;
                 break;
             case sounds.bounce:
-                audioSource.clip = bounceSound;
-                audioSource.volume = .2f;
+                //audioSource.clip = bounceSound;
+                //audioSource.volume = .2f;
                 break;
             case sounds.victory:
                 audioSource.clip = victorySound;
