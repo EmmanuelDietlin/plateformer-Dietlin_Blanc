@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Feedbacks : MonoBehaviour
 {
@@ -13,10 +14,13 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private Toggle soundFeedbacksToggle;
     [SerializeField] private Toggle playerDeformationFeedbacksToggle;
     [SerializeField] private Toggle damageFeedbacksToggle;
+    [SerializeField] private Toggle vibrationsFeedbackToggle;
 
     [SerializeField] private GameObject playerSprite;
 
+
     [SerializeField] private float damageEffectDuration;
+    [SerializeField] private float vibrationEffectDuration;
     [SerializeField] private float blinkDelay;
 
     [Header("Sound")]
@@ -27,7 +31,22 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private AudioClip bounceSound;
     [Space(10)]
 
+    [Header("Camera shake")]
+    [Space(5)]
+    [SerializeField] private float shakeDuration = 0f;
+    [SerializeField] private float shakeAmount = 0.7f;
+    [SerializeField] private float decreaseFactor = 1.0f;
+    [Space(10)]
+
+    [Header("Gamepad vibations")]
+    [Space(5)]
+    [SerializeField, Range(0, 1)] private float damageLowFreqVibrations;
+    [SerializeField, Range(0, 1)] private float damageHighFreqVibrations;
+
+
     private float blinkTimer;
+    private float vibrationsTimer;
+    private float shakeTimer;
 
     private ParticleSystem jumpParticles;
     private ParticleSystem wallParticles;
@@ -35,10 +54,14 @@ public class Feedbacks : MonoBehaviour
     private PlayerController player;
     private BoxCollider2D boxCollider;
 
+    private Transform cam_main;
+    private Vector3 originalPos;
+
     private bool particleFeedbacksEnabled;
     private bool soundFeedbacksEnabled;
     private bool playerDeformationFeedbacksEnabled;
     private bool damageFeedbacksEnabled;
+    private bool vibrationsFeedbackEnabled;
 
     private AudioSource audioSource;
 
@@ -56,6 +79,7 @@ public class Feedbacks : MonoBehaviour
         soundFeedbacksEnabled = true;
         playerDeformationFeedbacksEnabled = true;
         damageFeedbacksEnabled = true;
+        vibrationsFeedbackEnabled = true;
         audioSource = gameObject.GetComponent<AudioSource>();
         audioTimer = 20f;
         audioSource.clip = null;
@@ -67,6 +91,10 @@ public class Feedbacks : MonoBehaviour
         player = gameObject.GetComponent<PlayerController>();
         refScale = transform.localScale;
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
+
+        cam_main = Camera.main.transform;
+        originalPos = cam_main.position;
+        shakeTimer = shakeDuration;
     }
 
     // Update is called once per frame
@@ -80,7 +108,11 @@ public class Feedbacks : MonoBehaviour
         if (!damageFeedbacksEnabled) return;
         blinkTimer = 0;
         StartCoroutine(BlinkEffect());
+        StartCoroutine(shakeCamera());
+        if (vibrationsFeedbackEnabled) StartCoroutine(GamepadVibrations(damageLowFreqVibrations, damageHighFreqVibrations));
         PlaySound(sounds.damage);
+
+
     }
 
     public void JumpParticles()
@@ -93,6 +125,10 @@ public class Feedbacks : MonoBehaviour
     {
         if (!particleFeedbacksEnabled) return;
         //TODO: particules mur
+    }
+
+    public void OnBounce()
+    {
     }
 
     public void PlaySound(sounds s)
@@ -188,8 +224,6 @@ public class Feedbacks : MonoBehaviour
         {
             int status = (int)(blinkTimer / blinkDelay);
             blinkTimer += Time.deltaTime;
-            Debug.Log(blinkTimer);
-            Debug.Log(status);
             if (status % 2 == 0)
             {
                 playerSprite.SetActive(true);
@@ -203,6 +237,33 @@ public class Feedbacks : MonoBehaviour
             playerSprite.SetActive(true);
         yield return null;
     } 
+
+    private IEnumerator GamepadVibrations(float lowFreqSpeed, float highFreqSpeed)
+    {
+        Gamepad g = Gamepad.current;
+        while (vibrationsTimer < vibrationEffectDuration)
+        {
+            vibrationsTimer += Time.deltaTime;
+            if (g != null) g.SetMotorSpeeds(lowFreqSpeed, highFreqSpeed);
+            yield return null;
+        }
+        vibrationsTimer = 0f;
+        g.SetMotorSpeeds(0f, 0f);
+        yield return null;  
+    }
+
+    private IEnumerator shakeCamera()
+    {
+        while (shakeTimer > 0)
+        {
+            cam_main.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
+            shakeTimer -= Time.deltaTime * decreaseFactor;
+            yield return null;
+        }
+        shakeTimer = shakeDuration;
+        cam_main.localPosition = originalPos;
+        yield return null;
+    }
 
 
 

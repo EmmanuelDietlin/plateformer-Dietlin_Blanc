@@ -1318,14 +1318,14 @@ MonoBehaviour:
   fallGravityFactorSlider: {fileID: 43663136}
   groundSpeed: {fileID: 873842966}
   groundSpeedInput: {fileID: 1911736327}
-  inertia: {fileID: 947718657}
-  inertiaSlider: {fileID: 235118268}
+  brakeForce: {fileID: 947718657}
+  brakeForceSlider: {fileID: 235118268}
   sprint: {fileID: 1858826532}
   sprintSlider: {fileID: 1885871203}
-  dashForce: {fileID: 0}
-  dashForceInput: {fileID: 0}
-  dashDelay: {fileID: 0}
-  DashDelayInput: {fileID: 0}
+  dashForce: {fileID: 2002640939}
+  dashForceInput: {fileID: 576371693}
+  dashDelay: {fileID: 1017521415}
+  DashDelayInput: {fileID: 1710235603}
   dashBrake: {fileID: 1488620505}
   dashBrakeSlider: {fileID: 398246359}
   wallGrabDuration: {fileID: 988717111}
@@ -1586,7 +1586,7 @@ GameObject:
   - component: {fileID: 235118267}
   - component: {fileID: 235118268}
   m_Layer: 5
-  m_Name: Inertia
+  m_Name: BrakeForce
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5443,8 +5443,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 608348072}
   m_HandleRect: {fileID: 0}
   m_Direction: 2
-  m_Value: -0.055214725
-  m_Size: 0.9998524
+  m_Value: -0.1097561
+  m_Size: 0.99799937
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7973,11 +7973,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -10.08
+      value: -10.7
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 16.87
+      value: 18.9
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9164,7 +9164,7 @@ GameObject:
   - component: {fileID: 947718658}
   - component: {fileID: 947718657}
   m_Layer: 5
-  m_Name: InertiaValue
+  m_Name: BrakeForceValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9569,7 +9569,7 @@ GameObject:
   - component: {fileID: 993481077}
   - component: {fileID: 993481076}
   m_Layer: 5
-  m_Name: InertiaText
+  m_Name: BrakeForceText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9615,7 +9615,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Inertia value
+  m_text: Brake Force
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9799,7 +9799,7 @@ GameObject:
   - component: {fileID: 1017521416}
   - component: {fileID: 1017521415}
   m_Layer: 5
-  m_Name: DashTimerValue
+  m_Name: DashDelayValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14724,13 +14724,22 @@ MonoBehaviour:
   soundFeedbacksToggle: {fileID: 1268947779}
   playerDeformationFeedbacksToggle: {fileID: 249125737}
   damageFeedbacksToggle: {fileID: 2008476774}
+  vibrationsFeedbackToggle: {fileID: 0}
   playerSprite: {fileID: 477070411}
   damageEffectDuration: 1.5
+  vibrationEffectDuration: 0.1
   blinkDelay: 0.05
   victorySound: {fileID: 8300000, guid: 8da0dbb876a67d74c96b9c1619745ed8, type: 3}
   damageSound: {fileID: 8300000, guid: d0de7a149bf6fe541886bfbb04a5bfee, type: 3}
   succionSound: {fileID: 8300000, guid: 108769d9660b45747ad7b8bbb9f142af, type: 3}
   bounceSound: {fileID: 8300000, guid: fb501ccdd509e0649a328410a31448a8, type: 3}
+  shakeDuration: 0.2
+  shakeAmount: 0.7
+  decreaseFactor: 3
+  bounceLowFreqVibrations: 0.201
+  bounceHighFreqVibrations: 0.082
+  damageLowFreqVibrations: 0.131
+  damageHighFreqVibrations: 0.446
 --- !u!4 &1046750643 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 176241833785034341, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
@@ -15211,11 +15220,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -21.88
+      value: -19.9
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 16.07
+      value: 19.9
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.z
@@ -15690,15 +15699,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalScale.x
-      value: 7.328125
+      value: 8.885351
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 19.9
+      value: 19.8
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 17.27
+      value: 20.2
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: f5ba3d5044e54964896cce6890f1a034, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17571,7 +17580,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0052906387}
+  m_AnchoredPosition: {x: 0, y: 0.0054996214}
   m_SizeDelta: {x: 0, y: 356.3}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &1440198704
@@ -23378,7 +23387,7 @@ GameObject:
   - component: {fileID: 2002640940}
   - component: {fileID: 2002640939}
   m_Layer: 5
-  m_Name: DashValue
+  m_Name: DashForceValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23684,7 +23693,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1698738199}
   m_Direction: 2
   m_Value: 0.99999845
-  m_Size: 0.53901505
+  m_Size: 0.53901494
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -24630,6 +24639,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: brakeForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: jumpNumber
       value: 2
       objectReference: {fileID: 0}
@@ -24707,11 +24720,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 176241833785034341, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -38.9
+      value: -35.7
       objectReference: {fileID: 0}
     - target: {fileID: 176241833785034341, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -14.6
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 176241833785034341, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: m_LocalPosition.z
