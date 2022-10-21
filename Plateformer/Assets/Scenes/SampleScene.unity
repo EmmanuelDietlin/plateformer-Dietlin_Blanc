@@ -24025,7 +24025,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1698738200}
   m_HandleRect: {fileID: 1698738199}
   m_Direction: 2
-  m_Value: 0.99999845
+  m_Value: 0.9999986
   m_Size: 0.53901505
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -25038,6 +25038,14 @@ PrefabInstance:
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: horizontalGroundSpeed
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: toleranceJumpDuration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
+      propertyPath: descendingPlatformSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -3108894812244083455, guid: 398e3b92173b4ff4b9e72beba20b2177, type: 3}
       propertyPath: bouncyPlatformBounciness

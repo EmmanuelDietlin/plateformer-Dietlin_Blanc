@@ -254,7 +254,8 @@ public class Feedbacks : MonoBehaviour
             yield return null;
         }
         vibrationsTimer = 0f;
-        g.SetMotorSpeeds(0f, 0f);
+        if(g != null)
+            g.SetMotorSpeeds(0f, 0f);
         yield return null;  
     }
 
