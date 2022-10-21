@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 
 public class Feedbacks : MonoBehaviour
 {
-    [SerializeField] private Vector2 landingStretchValues;
     [SerializeField] private Vector2 speedStretchValues;
 
     [SerializeField] private Toggle particlesFeedbacksToggle;
@@ -120,14 +119,9 @@ public class Feedbacks : MonoBehaviour
         jumpParticles.Play();
     }
 
-    public void WallParticles()
-    {
-        if (!particleFeedbacksEnabled) return;
-        //TODO: particules mur
-    }
-
     public void OnBounce()
     {
+        PlaySound(sounds.bounce);
     }
 
     public void PlaySound(sounds s)
@@ -139,8 +133,8 @@ public class Feedbacks : MonoBehaviour
                 audioSource.volume = .3f;
                 break;
             case sounds.bounce:
-                //audioSource.clip = bounceSound;
-                //audioSource.volume = .2f;
+                audioSource.clip = bounceSound;
+                audioSource.volume = .2f;
                 break;
             case sounds.victory:
                 audioSource.clip = victorySound;
@@ -156,18 +150,6 @@ public class Feedbacks : MonoBehaviour
             audioTimer = 0f;
             audioSource.Play();
         }
-    }
-
-    public void RemanentEffectActivate()
-    {
-        if (!playerDeformationFeedbacksEnabled) return;
-        //TODO remanence
-    }
-
-    public void RemanentEffectDeactivate()
-    {
-        if (!playerDeformationFeedbacksEnabled) return;
-        //TODO remanence
     }
 
     public void Stretch(float maxXSpeed, float maxYSpeed)
