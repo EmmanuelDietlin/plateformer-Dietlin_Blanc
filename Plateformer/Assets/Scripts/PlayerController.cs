@@ -319,7 +319,7 @@ public class PlayerController : MonoBehaviour
     private void Bounce()
     {
         speed.y = Mathf.Min(speed.y * BouncyPlatformBounciness * -1f / Mathf.Sqrt(FallGravityFactor), VerticalMaxSpeed / Mathf.Sqrt(FallGravityFactor));
-        //feedbacks.PlaySound(Feedbacks.sounds.bounce);
+        feedbacks.OnBounce();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class Feedbacks : MonoBehaviour
 {
@@ -13,8 +14,10 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private Toggle soundFeedbacksToggle;
     [SerializeField] private Toggle playerDeformationFeedbacksToggle;
     [SerializeField] private Toggle damageFeedbacksToggle;
+    [SerializeField] private Toggle vibrationsFeedbackToggle;
 
     [SerializeField] private GameObject playerSprite;
+
 
     [SerializeField] private float damageEffectDuration;
     [SerializeField] private float vibrationEffectDuration;
@@ -35,6 +38,11 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private float decreaseFactor = 1.0f;
     [Space(10)]
 
+    [Header("Gamepad vibations")]
+    [Space(5)]
+    [SerializeField, Range(0, 1)] private float damageLowFreqVibrations;
+    [SerializeField, Range(0, 1)] private float damageHighFreqVibrations;
+
 
     private float blinkTimer;
     private float vibrationsTimer;
@@ -53,6 +61,7 @@ public class Feedbacks : MonoBehaviour
     private bool soundFeedbacksEnabled;
     private bool playerDeformationFeedbacksEnabled;
     private bool damageFeedbacksEnabled;
+    private bool vibrationsFeedbackEnabled;
 
     private AudioSource audioSource;
 
@@ -70,6 +79,7 @@ public class Feedbacks : MonoBehaviour
         soundFeedbacksEnabled = true;
         playerDeformationFeedbacksEnabled = true;
         damageFeedbacksEnabled = true;
+        vibrationsFeedbackEnabled = true;
         audioSource = gameObject.GetComponent<AudioSource>();
         audioTimer = 20f;
         audioSource.clip = null;
@@ -99,7 +109,9 @@ public class Feedbacks : MonoBehaviour
         blinkTimer = 0;
         StartCoroutine(BlinkEffect());
         StartCoroutine(shakeCamera());
+        if (vibrationsFeedbackEnabled) StartCoroutine(GamepadVibrations(damageLowFreqVibrations, damageHighFreqVibrations));
         PlaySound(sounds.damage);
+
 
     }
 
@@ -113,6 +125,10 @@ public class Feedbacks : MonoBehaviour
     {
         if (!particleFeedbacksEnabled) return;
         //TODO: particules mur
+    }
+
+    public void OnBounce()
+    {
     }
 
     public void PlaySound(sounds s)
@@ -222,14 +238,18 @@ public class Feedbacks : MonoBehaviour
         yield return null;
     } 
 
-    private IEnumerator GamepadVibrations()
+    private IEnumerator GamepadVibrations(float lowFreqSpeed, float highFreqSpeed)
     {
-        while (vibrationsTimer < damageEffectDuration)
+        Gamepad g = Gamepad.current;
+        while (vibrationsTimer < vibrationEffectDuration)
         {
             vibrationsTimer += Time.deltaTime;
-            //if ()
+            if (g != null) g.SetMotorSpeeds(lowFreqSpeed, highFreqSpeed);
             yield return null;
         }
+        vibrationsTimer = 0f;
+        g.SetMotorSpeeds(0f, 0f);
+        yield return null;  
     }
 
     private IEnumerator shakeCamera()
