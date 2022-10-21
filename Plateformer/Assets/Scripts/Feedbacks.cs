@@ -176,6 +176,8 @@ public class Feedbacks : MonoBehaviour
         float maxX_scale = speedStretchValues.x, maxY_scale = speedStretchValues.y;
         float newXScale = LinearScale(maxX_scale, refScale.x, maxXSpeed, Mathf.Abs(player.CurrentHorizontalSpeed));
         float newYScale = ExponentialScale(maxY_scale, refScale.y, maxYSpeed, Mathf.Abs(player.Speed.y));
+        Debug.Log("x scale : " + newXScale);
+        Debug.Log("y scale : " + newYScale);
         playerSprite.transform.localScale = new Vector3(newXScale,newYScale);
     }
 
