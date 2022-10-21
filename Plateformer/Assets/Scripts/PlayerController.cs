@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     public int JumpNumber { get { return this.jumpNumber; } set { this.jumpNumber = value; } }
     [SerializeField] private float jumpTimeTolerance;
     public float JumpTimeTolerance { get { return this.jumpTimeTolerance; } set { this.jumpTimeTolerance = value; } }
+
+    [SerializeField] private float toleranceJumpDuration;
+    public float ToleranceJumpDuration { get { return this.toleranceJumpDuration; } set { this.toleranceJumpDuration = value; } }
     [Space(10)]
 
     [Header("Dash")]
@@ -62,6 +65,10 @@ public class PlayerController : MonoBehaviour
     [Space(4)]
     [SerializeField] private float platformClipSpeed;
     public float PlatformClipSpeed { get { return this.platformClipSpeed; } set { this.platformClipSpeed = value; } }
+
+    [SerializeField] private float descendingPlatformSpeed;
+    public float DescendingPlatformSpeed { get { return this.descendingPlatformSpeed; } set { this.descendingPlatformSpeed = value; } }
+
     [SerializeField, Range(0, 1)] private float bouncyPlatformBounciness;
     public float BouncyPlatformBounciness { get { return this.bouncyPlatformBounciness; } set { this.bouncyPlatformBounciness = value; } }
     [Space(10)]
@@ -90,6 +97,7 @@ public class PlayerController : MonoBehaviour
     private string platformTag;
     private float dashStartTime;
     private float wallGrabStopStartTime;
+    private float isGroundedStopStartTime;
     private bool isGrabingWall;
     private Collider2D groundCollider2D;
     private bool isBouncing;
@@ -100,6 +108,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 horizontalMovDirection;
     private float currentHorizontalSpeed;
     public float CurrentHorizontalSpeed { get { return currentHorizontalSpeed; } }
+    private bool isDescending;
     // Start is called before the first frame update
     void Start()
     {
@@ -109,13 +118,13 @@ public class PlayerController : MonoBehaviour
         isGrabingWall = false;
         startPosition = transform.position;
         feedbacks = gameObject.GetComponent<Feedbacks>();
+        isDescending = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //RaycastHit2D ground = Physics2D.Raycast(transform.position, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
-        RaycastHit2D ground = Physics2D.CircleCast(transform.position, transform.localScale.x * 0.5f, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
+        RaycastHit2D ground = Physics2D.CircleCast(transform.position, transform.localScale.x * 0.45f, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
         horizontalMovDirection = Quaternion.Euler(0, 0, -90) * ground.normal;
 
         prevGroundedStatus = isGrounded;
@@ -126,15 +135,20 @@ public class PlayerController : MonoBehaviour
         isGrounded = groundCollider2D != null;
         platformTag = isGrounded ? groundCollider2D.tag : "";
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
-        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.26f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
-        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.26f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
+
         if (isGrounded && Input.GetAxisRaw("Sprint") > 0) currentMaxXSpeed = HorizontalGroundSpeed * SprintSpeedFactor;
 
         if (Input.GetAxis("Jump") != 0 && jumpsLeft == 0)
             jumpBufferTime = JumpTimeTolerance;
         jumpBufferTime -= Time.deltaTime;
+
+        if(!isGrounded && isGrounded != prevGroundedStatus)
+            isGroundedStopStartTime = Time.time;
+
         if (isGrounded)
         {
             if (isGrounded != prevGroundedStatus)
@@ -143,11 +157,22 @@ public class PlayerController : MonoBehaviour
             }
             jumpsLeft = JumpNumber;
         }
-        else if (jumpsLeft >= JumpNumber)
+        else if (jumpsLeft >= JumpNumber && curTime > isGroundedStopStartTime + ToleranceJumpDuration)
         {
             jumpsLeft = JumpNumber - 1;
         }
-        if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= PlatformClipSpeed && platformTag.Equals("SoftPlatform"))
+
+        if(Input.GetAxisRaw("Vertical") < 0 && platformTag.Equals("SoftPlatform"))
+            isDescending = true;
+
+        if (isDescending)
+        {
+            speed.y = -DescendingPlatformSpeed;
+            Debug.Log("Vertical" + speed.y);
+            if (!platformTag.Equals("SoftPlatform"))
+                isDescending = false;
+        }
+        else if (isCollidingWallLeft && isCollidingWallRight && isGrounded && speed.y <= PlatformClipSpeed && platformTag.Equals("SoftPlatform"))
         {
             isBouncing = false;
             speed.y = PlatformClipSpeed;
@@ -167,7 +192,7 @@ public class PlayerController : MonoBehaviour
             {
                 isGrabingWall = true;
                 speed.y = 0;
-                jumpsLeft++;
+                jumpsLeft = 1;
             }
             else if (Input.GetAxis("Horizontal") == 0)
             {
@@ -184,7 +209,7 @@ public class PlayerController : MonoBehaviour
             {
                 isGrabingWall = true;
                 speed.y = 0;
-                jumpsLeft++;
+                jumpsLeft = 1;
             }
             else if (Input.GetAxis("Horizontal") == 0)
             {
@@ -194,7 +219,6 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-
         else
         {
 
@@ -221,13 +245,13 @@ public class PlayerController : MonoBehaviour
                 wallGrabStopStartTime = Time.time;
             isGrabingWall = false;
         }
-
+        Debug.Log(speed.y);
         if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -5f)
         {
             isBouncing = true;
             Bounce();
         }
-        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform")) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f))
+        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f))
         {
             isBouncing = false;
             if (!platformTag.Equals("Slope")) speed.y = 0;
