@@ -28,14 +28,26 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private AudioClip bounceSound;
     [Space(10)]
 
+    [Header("Camera shake")]
+    [Space(5)]
+    [SerializeField] private float shakeDuration = 0f;
+    [SerializeField] private float shakeAmount = 0.7f;
+    [SerializeField] private float decreaseFactor = 1.0f;
+    [Space(10)]
+
+
     private float blinkTimer;
     private float vibrationsTimer;
+    private float shakeTimer;
 
     private ParticleSystem jumpParticles;
     private ParticleSystem wallParticles;
 
     private PlayerController player;
     private BoxCollider2D boxCollider;
+
+    private Transform cam_main;
+    private Vector3 originalPos;
 
     private bool particleFeedbacksEnabled;
     private bool soundFeedbacksEnabled;
@@ -69,6 +81,10 @@ public class Feedbacks : MonoBehaviour
         player = gameObject.GetComponent<PlayerController>();
         refScale = transform.localScale;
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
+
+        cam_main = Camera.main.transform;
+        originalPos = cam_main.position;
+        shakeTimer = shakeDuration;
     }
 
     // Update is called once per frame
@@ -82,6 +98,7 @@ public class Feedbacks : MonoBehaviour
         if (!damageFeedbacksEnabled) return;
         blinkTimer = 0;
         StartCoroutine(BlinkEffect());
+        StartCoroutine(shakeCamera());
         PlaySound(sounds.damage);
 
     }
@@ -213,6 +230,19 @@ public class Feedbacks : MonoBehaviour
             //if ()
             yield return null;
         }
+    }
+
+    private IEnumerator shakeCamera()
+    {
+        while (shakeTimer > 0)
+        {
+            cam_main.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
+            shakeTimer -= Time.deltaTime * decreaseFactor;
+            yield return null;
+        }
+        shakeTimer = shakeDuration;
+        cam_main.localPosition = originalPos;
+        yield return null;
     }
 
 
