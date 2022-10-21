@@ -27,8 +27,6 @@ public class MainMenuManager : MonoBehaviour
         quitTimer = 0f;
         mainMenuButtons = mainMenu.GetComponentsInChildren<Button>();
         controlsMenuButtons = controlsMenu.GetComponentsInChildren<Button>();
-        //Debug.Log(mainMenuButtons.Length);
-        //Debug.Log(controlsMenuButtons.Length);
         mainMenuSelectedButton = 0;
         controlsMenuSelectedButton = 0;
         EventSystem.current.SetSelectedGameObject(null);

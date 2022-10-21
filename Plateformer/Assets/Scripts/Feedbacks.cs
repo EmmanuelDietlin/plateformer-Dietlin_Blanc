@@ -35,7 +35,6 @@ public class Feedbacks : MonoBehaviour
     [Space(5)]
     [SerializeField] private float shakeDuration = 0f;
     [SerializeField] private float shakeAmount = 0.7f;
-    [SerializeField] private float decreaseFactor = 1.0f;
     [Space(10)]
 
     [Header("Gamepad vibations")]
@@ -262,7 +261,7 @@ public class Feedbacks : MonoBehaviour
         while (shakeTimer > 0)
         {
             cam_main.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
-            shakeTimer -= Time.deltaTime * decreaseFactor;
+            shakeTimer -= Time.deltaTime * 3;
             yield return null;
         }
         shakeTimer = shakeDuration;
