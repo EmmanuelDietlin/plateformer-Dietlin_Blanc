@@ -201,6 +201,11 @@ public class Feedbacks : MonoBehaviour
         damageFeedbacksEnabled = damageFeedbacksToggle.isOn;
     }
 
+    public void OnVibrationsFeedbackChange()
+    {
+        vibrationsFeedbackEnabled = vibrationsFeedbackToggle.isOn;
+    }
+
     public void OnVictory()
     {
         PlaySound(sounds.victory);

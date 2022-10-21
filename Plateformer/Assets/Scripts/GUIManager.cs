@@ -6,6 +6,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 public class GUIManager : MonoBehaviour
 {
@@ -81,7 +82,7 @@ public class GUIManager : MonoBehaviour
     private int currentSelectedPauseButton;
 
     private float pauseMenuTimer = .5f;
-    private float changeButtonTimer = .3f;
+    private float changeButtonTimer = .1f;
     private float time;
     private float buttonTime;
 
@@ -132,10 +133,11 @@ public class GUIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if ((modificationMenu.activeSelf || feedbacksMenu.activeSelf) && !pauseMenu.activeSelf && !controlsMenu.activeSelf)
+            EventSystem.current.SetSelectedGameObject(null);
         if ( buttonTime < 5f) buttonTime += Time.unscaledDeltaTime;
         if (Input.GetAxisRaw("Pause") > 0 && Time.unscaledTime > pauseMenuTimer + time)
         {
-            Debug.Log("pouic");
             time = Time.unscaledTime;
             if (pauseMenu.activeSelf) OnResume();
             else OnPause();
@@ -147,7 +149,8 @@ public class GUIManager : MonoBehaviour
                 int dir = (int)Input.GetAxisRaw("Horizontal");
                 buttonTime = 0f;
                 EventSystem.current.SetSelectedGameObject(null);
-                currentSelectedPauseButton = (currentSelectedPauseButton + dir) % pauseMenuButtons.Length;
+                if (dir < 0 && currentSelectedPauseButton == 0) currentSelectedPauseButton = pauseMenuButtons.Length - 1;
+                else currentSelectedPauseButton = (currentSelectedPauseButton + dir) % pauseMenuButtons.Length;
                 EventSystem.current.SetSelectedGameObject(pauseMenuButtons[currentSelectedPauseButton].gameObject);
             }
         }
