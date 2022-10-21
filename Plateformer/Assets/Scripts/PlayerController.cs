@@ -200,6 +200,7 @@ public class PlayerController : MonoBehaviour
                     wallGrabStopStartTime = Time.time;
                 isGrabingWall = false;
             }
+            currentHorizontalSpeed = speed.x;
         }
         else if (isCollidingWallLeft)
         {
@@ -217,6 +218,7 @@ public class PlayerController : MonoBehaviour
                     wallGrabStopStartTime = Time.time;
                 isGrabingWall = false;
             }
+            currentHorizontalSpeed = speed.x;
 
         }
         else
@@ -232,20 +234,18 @@ public class PlayerController : MonoBehaviour
                 var tmp = speed.x;
                 speed.x = tmp * horizontalMovDirection.normalized.x;
                 speed.y = tmp * horizontalMovDirection.normalized.y;
-                currentHorizontalSpeed = Mathf.Sqrt(Mathf.Pow(speed.x, 2) + Mathf.Pow(speed.y, 2));
+                currentHorizontalSpeed = Mathf.Abs(tmp);
             }
             else
             {
                 currentHorizontalSpeed = speed.x;
             }
-
-
+            
 
             if (isGrabingWall)
                 wallGrabStopStartTime = Time.time;
             isGrabingWall = false;
         }
-        Debug.Log(speed.y);
         if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -5f)
         {
             isBouncing = true;
