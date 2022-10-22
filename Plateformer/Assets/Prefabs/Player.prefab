@@ -129,11 +129,13 @@ MonoBehaviour:
   longJumpThreshold: 0
   jumpNumber: 2
   jumpTimeTolerance: 0
+  toleranceJumpDuration: 0
   dashBrake: 0
-  dashValue: 0
-  dashTimer: 0
+  dashForce: 0
+  dashDelay: 0
   horizontalGroundSpeed: 8
-  inertia: 0
+  brakeForce: 0
+  sprintSpeedFactor: 0
   horizontalAirSpeed: 2
   fallGravityFactor: 0
   gravityValue: 0
@@ -141,6 +143,7 @@ MonoBehaviour:
   wallFriction: 0
   wallGrabDuration: 0
   platformClipSpeed: 0
+  descendingPlatformSpeed: 0
   bouncyPlatformBounciness: 0
   groundLayer:
     serializedVersion: 2

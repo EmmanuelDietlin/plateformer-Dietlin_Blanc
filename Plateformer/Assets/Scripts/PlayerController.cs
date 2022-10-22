@@ -328,7 +328,12 @@ public class PlayerController : MonoBehaviour
     {
         dashStartTime = Time.time;
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        speed.x += DashForce * movDirX * currentMaxXSpeed;
+        RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, Vector2.right * movDirX, (speed.x + DashForce * movDirX * currentMaxXSpeed) * 30 * Time.deltaTime / brakeForce, wallLayer);
+        if (hit.collider == null)
+        {
+            speed.x += DashForce * movDirX * currentMaxXSpeed;
+        } 
+        Debug.DrawRay(transform.position, Vector3.right * (speed.x + DashForce * movDirX * currentMaxXSpeed) * 30 * Time.deltaTime / brakeForce, Color.white, 1f);
     }
 
     private void WallJump()
