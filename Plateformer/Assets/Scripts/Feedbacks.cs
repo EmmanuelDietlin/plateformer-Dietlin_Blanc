@@ -66,6 +66,12 @@ public class Feedbacks : MonoBehaviour
     private Vector2 refScale;
 
     private float audioTimer;
+    private float immunityTimer;
+
+    private bool blinkingActive;
+    private bool shakingActive;
+    private bool vibrationsActive;
+
 
     public enum sounds { damage, victory, bounce, succion}
     
@@ -92,25 +98,33 @@ public class Feedbacks : MonoBehaviour
 
         cam_main = Camera.main.transform;
         originalPos = cam_main.position;
-        shakeTimer = shakeDuration;
+        shakeTimer = 0f;
+        vibrationsTimer = 0f;
+        immunityTimer = damageEffectDuration;
+
+        blinkingActive = false;
+        shakingActive = false;
+        vibrationsActive = false;
+
     }
 
     // Update is called once per frame
     void Update()
     {
         if (audioTimer < 20f) audioTimer += Time.deltaTime;
+        if (immunityTimer < 20f) immunityTimer += Time.deltaTime;
     }
 
     public void OnDamageTaken()
     {
         if (!damageFeedbacksEnabled) return;
-        blinkTimer = 0;
-        StartCoroutine(BlinkEffect());
-        StartCoroutine(shakeCamera());
-        if (vibrationsFeedbackEnabled) StartCoroutine(GamepadVibrations(damageLowFreqVibrations, damageHighFreqVibrations));
-        PlaySound(sounds.damage);
-
-
+        if (immunityTimer > damageEffectDuration) immunityTimer = 0f;
+    
+        if (!blinkingActive) StartCoroutine(BlinkEffect());
+        if(!shakingActive) StartCoroutine(shakeCamera());
+        if (vibrationsFeedbackEnabled && !vibrationsActive) StartCoroutine(GamepadVibrations(damageLowFreqVibrations, damageHighFreqVibrations));
+        if (immunityTimer == 0f) PlaySound(sounds.damage);
+       
     }
 
     public void JumpParticles()
@@ -205,7 +219,8 @@ public class Feedbacks : MonoBehaviour
     }
 
     private IEnumerator BlinkEffect()
-    { 
+    {
+        blinkingActive = true;
         while (blinkTimer < damageEffectDuration)
         {
             int status = (int)(blinkTimer / blinkDelay);
@@ -221,11 +236,14 @@ public class Feedbacks : MonoBehaviour
         }
         if (!playerSprite.activeSelf) 
             playerSprite.SetActive(true);
+        blinkingActive = false;
+        blinkTimer = 0f;
         yield return null;
     } 
 
     private IEnumerator GamepadVibrations(float lowFreqSpeed, float highFreqSpeed)
     {
+        vibrationsActive = true;
         Gamepad g = Gamepad.current;
         while (vibrationsTimer < vibrationEffectDuration)
         {
@@ -233,22 +251,29 @@ public class Feedbacks : MonoBehaviour
             if (g != null) g.SetMotorSpeeds(lowFreqSpeed, highFreqSpeed);
             yield return null;
         }
-        vibrationsTimer = 0f;
-        if(g != null)
+        if (g != null)
             g.SetMotorSpeeds(0f, 0f);
+        //while (immunityTimer < damageEffectDuration) yield return null;
+        yield return new WaitForSeconds(damageEffectDuration - vibrationEffectDuration);
+        vibrationsTimer = 0f;
+        vibrationsActive=false;
         yield return null;  
     }
 
     private IEnumerator shakeCamera()
     {
-        while (shakeTimer > 0)
+        shakingActive = true;
+        while (shakeTimer < shakeDuration)
         {
             cam_main.localPosition = originalPos + Random.insideUnitSphere * shakeAmount;
-            shakeTimer -= Time.deltaTime * 3;
+            shakeTimer += Time.deltaTime * 3;
             yield return null;
         }
-        shakeTimer = shakeDuration;
         cam_main.localPosition = originalPos;
+        //while (immunityTimer < damageEffectDuration) yield return null;
+        yield return new WaitForSeconds(damageEffectDuration - shakeDuration);
+        shakeTimer = 0f;
+        shakingActive = false;
         yield return null;
     }
 

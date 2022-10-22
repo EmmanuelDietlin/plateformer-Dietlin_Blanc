@@ -135,6 +135,7 @@ public class PlayerController : MonoBehaviour
         isGrounded = groundCollider2D != null;
         platformTag = isGrounded ? groundCollider2D.tag : "";
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
+
         isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
         isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
 
@@ -155,6 +156,7 @@ public class PlayerController : MonoBehaviour
             {
                 feedbacks.JumpParticles();
             }
+            if (platformTag.Equals("Spike")) feedbacks.OnDamageTaken();
             jumpsLeft = JumpNumber;
         }
         else if (jumpsLeft >= JumpNumber && curTime > isGroundedStopStartTime + ToleranceJumpDuration)
@@ -366,7 +368,7 @@ public class PlayerController : MonoBehaviour
             transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
         }
         if (collision.tag.Equals("HardPlatform") || collision.tag.Equals("Slope")) speed.y = 0;
-        if (collision.tag.Equals("Spike")) feedbacks.OnDamageTaken();
+
         if (collision.tag.Equals("Finish")) feedbacks.OnVictory();
     }
 
