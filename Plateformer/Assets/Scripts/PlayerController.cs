@@ -130,6 +130,8 @@ public class PlayerController : MonoBehaviour
     private float isGroundedStopStartTime;
     private bool isGrabingWall;
     private Collider2D groundCollider2D;
+    private Collider2D leftWallCollider2D;
+    private Collider2D rightWallCollider2D;
     private bool isBouncing;
     private float jumpBufferTime;
     private Vector3 startPosition;
@@ -169,8 +171,10 @@ public class PlayerController : MonoBehaviour
         platformTag = isGrounded ? groundCollider2D.tag : "";
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
 
-        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .2f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
-        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .2f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
+        leftWallCollider2D = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector2(transform.localScale.x * .5f, transform.localScale.y - .2f), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallLeft = leftWallCollider2D != null;
+        rightWallCollider2D = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector2(transform.localScale.x * .5f, transform.localScale.y - .2f), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallRight = rightWallCollider2D != null;
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
 
@@ -182,6 +186,11 @@ public class PlayerController : MonoBehaviour
 
         if(!isGrounded && isGrounded != prevGroundedStatus)
             isGroundedStopStartTime = Time.time;
+
+        if (isCollidingWallLeft && leftWallCollider2D.CompareTag("Spike"))
+            feedbacks.OnDamageTaken();
+        if (isCollidingWallRight && rightWallCollider2D.CompareTag("Spike"))
+            feedbacks.OnDamageTaken();
 
         if (isGrounded)
         {
@@ -203,7 +212,6 @@ public class PlayerController : MonoBehaviour
         if (isDescending)
         {
             speed.y = -DescendingPlatformSpeed;
-            Debug.Log("Vertical" + speed.y);
             if (!platformTag.Equals("SoftPlatform"))
                 isDescending = false;
         }
@@ -339,14 +347,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             ColliderDistance2D distance = boxCollider.Distance(hit.collider);
-            if (distance.normal.x != 0)
-            {
-                transform.position += new Vector3(distance.normal.x * distance.distance, 0, 0);
-            }
-            if (distance.normal.y != 0)
-            {
-                transform.position += new Vector3(0, distance.normal.y * distance.distance, 0);
-            }
+            transform.position += new Vector3(distance.normal.x, distance.normal.y, 0) * distance.distance;
         }
 
         if (!platformTag.Equals("Slope"))
