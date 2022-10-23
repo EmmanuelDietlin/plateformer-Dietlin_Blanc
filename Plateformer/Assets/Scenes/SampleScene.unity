@@ -5245,7 +5245,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8997078165252828276, guid: a1fe158090d01534c93ef17b9b1d4c94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.37
+      value: 7.34
       objectReference: {fileID: 0}
     - target: {fileID: 8997078165252828276, guid: a1fe158090d01534c93ef17b9b1d4c94, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5519,8 +5519,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 608348072}
   m_HandleRect: {fileID: 0}
   m_Direction: 2
-  m_Value: -0.08024691
-  m_Size: 0.99997586
+  m_Value: -0.024539877
+  m_Size: 0.9999812
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6957,9 +6957,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4420978417840168957, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4899645033688009520, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_Name
       value: Soft Platform (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395321629516475470, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_RootOrder
@@ -9927,7 +9935,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8997078165252828276, guid: a1fe158090d01534c93ef17b9b1d4c94, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.36
+      value: 7.34
       objectReference: {fileID: 0}
     - target: {fileID: 8997078165252828276, guid: a1fe158090d01534c93ef17b9b1d4c94, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17201,9 +17209,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4420978417840168957, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4899645033688009520, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_Name
       value: Soft Platform
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395321629516475470, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_RootOrder
@@ -17911,7 +17927,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0054086344}
+  m_AnchoredPosition: {x: 0, y: 0.005105993}
   m_SizeDelta: {x: 0, y: 356.3}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &1440198704
@@ -22411,9 +22427,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4420978417840168957, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4899645033688009520, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_Name
       value: Soft Platform (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395321629516475470, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_RootOrder
@@ -23145,9 +23169,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4420978417840168957, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4899645033688009520, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_Name
       value: Soft Platform (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395321629516475470, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_RootOrder
@@ -23576,9 +23608,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4420978417840168957, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4899645033688009520, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_Name
       value: Soft Platform (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395321629516475470, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698661692830822805, guid: 3ce2c5792b5ea7c419227a0f6727937c, type: 3}
       propertyPath: m_RootOrder
