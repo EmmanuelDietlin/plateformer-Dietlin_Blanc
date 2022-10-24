@@ -6,6 +6,10 @@ using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Inspector Parameters
+
+    #region Jump
+
     [Header("Jump")]
     [Space(4)]
     [SerializeField] private float verticalImpulse;
@@ -21,6 +25,10 @@ public class PlayerController : MonoBehaviour
     public float ToleranceJumpDuration { get { return this.toleranceJumpDuration; } set { this.toleranceJumpDuration = value; } }
     [Space(10)]
 
+    #endregion
+
+    #region Dash
+
     [Header("Dash")]
     [Space(4)]
     [SerializeField, Range(0, 20)] private float dashBrake;
@@ -31,6 +39,10 @@ public class PlayerController : MonoBehaviour
     public float DashDelay { get { return this.dashDelay; } set { this.dashDelay = value; } }
     [Space(10)]
 
+    #endregion
+
+    #region Ground Movement
+
     [Header("Ground Movement")]
     [Space(4)]
     [SerializeField] private float horizontalGroundSpeed;
@@ -40,6 +52,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(1,3)] private float sprintSpeedFactor;
     public float SprintSpeedFactor { get { return this.sprintSpeedFactor; } set { this.sprintSpeedFactor = value; } }
     [Space(10)]
+
+    #endregion
+
+    #region Air Movement
 
     [Header("Air Movement")]
     [Space(4)]
@@ -53,6 +69,10 @@ public class PlayerController : MonoBehaviour
     public float VerticalMaxSpeed { get { return this.verticalMaxSpeed; } set { this.verticalMaxSpeed = value; } }
     [Space(10)]
 
+    #endregion
+
+    #region Wall Jump
+
     [Header("Wall Jump")]
     [Space(4)]
     [SerializeField, Range(0, 1)] private float wallFriction;
@@ -60,6 +80,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float wallGrabDuration;
     public float WallGrabDuration { get { return this.wallGrabDuration; } set { this.wallGrabDuration = value; } }
     [Space(10)]
+
+    #endregion
+
+    #region Special Platforms
 
     [Header("Special Platforms")]
     [Space(4)]
@@ -73,6 +97,10 @@ public class PlayerController : MonoBehaviour
     public float BouncyPlatformBounciness { get { return this.bouncyPlatformBounciness; } set { this.bouncyPlatformBounciness = value; } }
     [Space(10)]
 
+    #endregion
+
+    #region Collisions
+
     [Header("Collisions")]
     [Space(4)]
     [SerializeField] private LayerMask groundLayer;
@@ -81,9 +109,11 @@ public class PlayerController : MonoBehaviour
     public LayerMask WallLayer { get { return this.wallLayer; } set { this.wallLayer = value; } }
     [Space(10)]
 
+    #endregion
 
+    #endregion
 
-
+    #region Private field
 
     private BoxCollider2D boxCollider;
     private bool isGrounded;
@@ -100,6 +130,8 @@ public class PlayerController : MonoBehaviour
     private float isGroundedStopStartTime;
     private bool isGrabingWall;
     private Collider2D groundCollider2D;
+    private Collider2D leftWallCollider2D;
+    private Collider2D rightWallCollider2D;
     private bool isBouncing;
     private float jumpBufferTime;
     private Vector3 startPosition;
@@ -109,6 +141,9 @@ public class PlayerController : MonoBehaviour
     private float currentHorizontalSpeed;
     public float CurrentHorizontalSpeed { get { return currentHorizontalSpeed; } }
     private bool isDescending;
+
+    #endregion
+
     // Start is called before the first frame update
     void Start()
     {
@@ -136,8 +171,10 @@ public class PlayerController : MonoBehaviour
         platformTag = isGrounded ? groundCollider2D.tag : "";
         Vector2 wallCollisionsBoxCheck = (Vector2)transform.position;
 
-        isCollidingWallLeft = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
-        isCollidingWallRight = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector3(transform.localScale.x * .5f, transform.localScale.y - .1f, transform.localScale.z), -transform.rotation.eulerAngles.z, WallLayer);
+        leftWallCollider2D = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * -0.32f), new Vector2(transform.localScale.x * .5f, transform.localScale.y - .2f), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallLeft = leftWallCollider2D != null;
+        rightWallCollider2D = Physics2D.OverlapBox(wallCollisionsBoxCheck + (new Vector2(this.transform.right.x, this.transform.right.y) * 0.32f), new Vector2(transform.localScale.x * .5f, transform.localScale.y - .2f), -transform.rotation.eulerAngles.z, WallLayer);
+        isCollidingWallRight = rightWallCollider2D != null;
 
         currentMaxXSpeed = isGrounded ? HorizontalGroundSpeed : HorizontalAirSpeed;
 
@@ -149,6 +186,11 @@ public class PlayerController : MonoBehaviour
 
         if(!isGrounded && isGrounded != prevGroundedStatus)
             isGroundedStopStartTime = Time.time;
+
+        if (isCollidingWallLeft && leftWallCollider2D.CompareTag("Spike"))
+            feedbacks.OnDamageTaken();
+        if (isCollidingWallRight && rightWallCollider2D.CompareTag("Spike"))
+            feedbacks.OnDamageTaken();
 
         if (isGrounded)
         {
@@ -170,7 +212,6 @@ public class PlayerController : MonoBehaviour
         if (isDescending)
         {
             speed.y = -DescendingPlatformSpeed;
-            Debug.Log("Vertical" + speed.y);
             if (!platformTag.Equals("SoftPlatform"))
                 isDescending = false;
         }
@@ -305,7 +346,19 @@ public class PlayerController : MonoBehaviour
         {
             transform.rotation = Quaternion.identity;
         }
-        transform.position += (Vector3)speed * Time.deltaTime;
+
+        float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
+        RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.deltaTime, wallLayer);
+        if (hit.collider == null || hit.collider.tag.Equals("SoftPlatform"))
+        {
+            transform.position += (Vector3)speed * Time.deltaTime;
+        }
+        else
+        {
+            ColliderDistance2D distance = boxCollider.Distance(hit.collider);
+            transform.position += new Vector3(distance.normal.x, distance.normal.y, 0) * distance.distance;
+        }
+
         if (!platformTag.Equals("Slope"))
         {
             ApplyPhysics();
@@ -339,12 +392,7 @@ public class PlayerController : MonoBehaviour
     {
         dashStartTime = Time.time;
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position, Vector2.right * movDirX, (speed.x + DashForce * movDirX * currentMaxXSpeed) * 30 * Time.deltaTime / brakeForce, wallLayer);
-        if (hit.collider == null)
-        {
-            speed.x += DashForce * movDirX * currentMaxXSpeed;
-        } 
-        Debug.DrawRay(transform.position, Vector3.right * (speed.x + DashForce * movDirX * currentMaxXSpeed) * 30 * Time.deltaTime / brakeForce, Color.white, 1f);
+        speed.x += DashForce * movDirX * currentMaxXSpeed;
     }
 
     private void WallJump()
