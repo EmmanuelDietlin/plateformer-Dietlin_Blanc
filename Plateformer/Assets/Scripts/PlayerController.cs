@@ -140,8 +140,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 horizontalMovDirection;
     private float currentHorizontalSpeed;
 
-    private int currentBounceNumber;
-    private int maxNumberOfBounces = 10;
+    
     public float CurrentHorizontalSpeed { get { return currentHorizontalSpeed; } }
     private bool isDescending;
 
@@ -150,6 +149,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 60;
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
         jumpsLeft = JumpNumber;
         dashStartTime = 0f;
@@ -162,6 +162,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        speed.x = Mathf.Round(speed.x * 1000) / 1000;
+        speed.y = Mathf.Round(speed.y * 1000) / 1000;
         RaycastHit2D ground = Physics2D.CircleCast(transform.position, transform.localScale.x * 0.45f, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
         horizontalMovDirection = Quaternion.Euler(0, 0, -90) * ground.normal;
 
@@ -293,7 +295,7 @@ public class PlayerController : MonoBehaviour
             isGrabingWall = false;
         }
         
-        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -7f)
+        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -12f)
         {
             Debug.Log("speed y : " + speed.y);
             isBouncing = true;
@@ -302,7 +304,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("isBouncing ? " + isBouncing);
 
         }
-        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -7f && speed.y < 0))
+        else if ((platformTag.Equals("BouncyPlatform") && speed.y > -12f && speed.y <= 0) || (isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending))
         {
             Debug.Log("speed y : " + speed.y);
             Debug.Log("isNotBouncing ? " + isBouncing);
