@@ -10,6 +10,9 @@ TagManager:
   - Spike
   - Slope
   - Wall
+  - Slider
+  - InputBox
+  - Checkbox
   layers:
   - Default
   - TransparentFX

@@ -134,7 +134,15 @@ public class GUIManager : MonoBehaviour
     void Update()
     {
         if ((modificationMenu.activeSelf || feedbacksMenu.activeSelf) && !pauseMenu.activeSelf && !controlsMenu.activeSelf)
-            EventSystem.current.SetSelectedGameObject(null);
+        {
+            GameObject select = EventSystem.current.currentSelectedGameObject;
+            if (select != null && !select.tag.Equals("InputBox"))
+            {
+                Debug.Log("pouic");
+                EventSystem.current.SetSelectedGameObject(null);
+
+            }
+        }  
         if ( buttonTime < 5f) buttonTime += Time.unscaledDeltaTime;
         if (Input.GetAxisRaw("Pause") > 0 && Time.unscaledTime > pauseMenuTimer + time)
         {

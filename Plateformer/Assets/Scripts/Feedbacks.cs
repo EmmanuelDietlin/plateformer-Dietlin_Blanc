@@ -121,8 +121,6 @@ public class Feedbacks : MonoBehaviour
     {
         if (audioTimer < 20f) audioTimer += Time.deltaTime;
         if (immunityTimer < 20f) immunityTimer += Time.deltaTime;
-        Debug.Log(baseColor);
-        Debug.Log(rend.color);
         if (player.JumpsLeft == 0) rend.color = noMoreJumpsColor;
         else rend.color = baseColor;
     }

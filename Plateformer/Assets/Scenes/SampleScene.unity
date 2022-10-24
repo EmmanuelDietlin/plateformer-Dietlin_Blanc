@@ -394,7 +394,7 @@ GameObject:
   - component: {fileID: 43663136}
   m_Layer: 5
   m_Name: FallGravityFactor
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 95434452}
   m_Layer: 5
   m_Name: JumpNumber
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1737,7 +1737,7 @@ GameObject:
   - component: {fileID: 235118268}
   m_Layer: 5
   m_Name: BrakeForce
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1841,7 +1841,7 @@ GameObject:
   - component: {fileID: 242083797}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1975,7 +1975,7 @@ GameObject:
   - component: {fileID: 249125737}
   m_Layer: 5
   m_Name: PlayerDeformationFeedbacks
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2076,7 +2076,7 @@ GameObject:
   - component: {fileID: 251854183}
   m_Layer: 5
   m_Name: HorizontalAirSpeed
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2638,7 +2638,7 @@ GameObject:
   - component: {fileID: 347207048}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2772,7 +2772,7 @@ GameObject:
   - component: {fileID: 347330301}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2901,7 +2901,7 @@ GameObject:
   - component: {fileID: 361975778}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3072,7 +3072,7 @@ GameObject:
   - component: {fileID: 398246359}
   m_Layer: 5
   m_Name: DashBrake
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3251,7 +3251,7 @@ GameObject:
   - component: {fileID: 428877822}
   m_Layer: 5
   m_Name: EnableFeedbacks
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3427,7 +3427,7 @@ GameObject:
   - component: {fileID: 432705624}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3561,7 +3561,7 @@ GameObject:
   - component: {fileID: 438560709}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3749,7 +3749,7 @@ GameObject:
   - component: {fileID: 443064087}
   m_Layer: 5
   m_Name: WallFriction
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4346,7 +4346,7 @@ GameObject:
   - component: {fileID: 506920489}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4566,7 +4566,7 @@ GameObject:
   - component: {fileID: 540686542}
   m_Layer: 5
   m_Name: GravityValue
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4753,7 +4753,7 @@ GameObject:
   - component: {fileID: 546776529}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5129,7 +5129,7 @@ GameObject:
   - component: {fileID: 576371693}
   m_Layer: 5
   m_Name: DashForce
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5598,8 +5598,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 608348072}
   m_HandleRect: {fileID: 0}
   m_Direction: 2
-  m_Value: -0.05487805
-  m_Size: 0.9999608
+  m_Value: -0.17682926
+  m_Size: 0.999983
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5654,7 +5654,7 @@ GameObject:
   - component: {fileID: 626602361}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5707,7 +5707,7 @@ GameObject:
   - component: {fileID: 631295627}
   m_Layer: 5
   m_Name: VibrationsFeedback
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6915,7 +6915,7 @@ GameObject:
   - component: {fileID: 687176475}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7157,7 +7157,7 @@ GameObject:
   - component: {fileID: 727061918}
   m_Layer: 5
   m_Name: WallGrabDuration
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8097,7 +8097,7 @@ GameObject:
   - component: {fileID: 786167068}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8452,7 +8452,7 @@ GameObject:
   - component: {fileID: 821111109}
   m_Layer: 5
   m_Name: ParticleFeedbacks
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8687,7 +8687,7 @@ GameObject:
   - component: {fileID: 835704262}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16122,7 +16122,7 @@ GameObject:
   - component: {fileID: 1202797149}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16515,7 +16515,7 @@ GameObject:
   - component: {fileID: 1247766058}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -16692,7 +16692,7 @@ GameObject:
   - component: {fileID: 1248813752}
   m_Layer: 5
   m_Name: PlatformClipSpeed
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17013,7 +17013,7 @@ GameObject:
   - component: {fileID: 1266234959}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17147,7 +17147,7 @@ GameObject:
   - component: {fileID: 1268947779}
   m_Layer: 5
   m_Name: SoundFeedbacks
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17959,7 +17959,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0053289193}
+  m_AnchoredPosition: {x: 0, y: 0.005853763}
   m_SizeDelta: {x: 0, y: 356.3}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &1440198704
@@ -18278,7 +18278,7 @@ GameObject:
   - component: {fileID: 1470042423}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -18739,7 +18739,7 @@ GameObject:
   - component: {fileID: 1528789718}
   m_Layer: 5
   m_Name: JumpTimeTolerance
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19527,7 +19527,7 @@ GameObject:
   - component: {fileID: 1618649819}
   m_Layer: 5
   m_Name: LongJumpThreshold
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20019,7 +20019,7 @@ GameObject:
   - component: {fileID: 1662418069}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20073,7 +20073,7 @@ GameObject:
   - component: {fileID: 1684838353}
   m_Layer: 5
   m_Name: Text
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20423,7 +20423,7 @@ GameObject:
   - component: {fileID: 1710235603}
   m_Layer: 5
   m_Name: DashDelay
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -20977,7 +20977,7 @@ GameObject:
   - component: {fileID: 1776140987}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21675,7 +21675,7 @@ GameObject:
   - component: {fileID: 1826955035}
   m_Layer: 5
   m_Name: ModificationMenuEnabler
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21774,7 +21774,7 @@ GameObject:
   - component: {fileID: 1843580499}
   m_Layer: 5
   m_Name: FeedbackMenuEnabler
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21786,7 +21786,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1843580497}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21798,7 +21798,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -220, y: -32.34796}
+  m_AnchoredPosition: {x: -219.99939, y: -32.34784}
   m_SizeDelta: {x: 294.481, y: 53.805}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1843580499
@@ -21873,7 +21873,7 @@ GameObject:
   - component: {fileID: 1850106289}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22214,7 +22214,7 @@ GameObject:
   - component: {fileID: 1885871203}
   m_Layer: 5
   m_Name: Sprint
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22512,7 +22512,7 @@ GameObject:
   - component: {fileID: 1898094810}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22836,7 +22836,7 @@ GameObject:
   - component: {fileID: 1911736327}
   m_Layer: 5
   m_Name: GroundSpeed
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23273,7 +23273,7 @@ GameObject:
   - component: {fileID: 1965035146}
   m_Layer: 5
   m_Name: VerticalImpulse
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23527,7 +23527,7 @@ GameObject:
   - component: {fileID: 1972943887}
   m_Layer: 5
   m_Name: Text Area
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -23860,7 +23860,7 @@ GameObject:
   - component: {fileID: 2008476774}
   m_Layer: 5
   m_Name: DamageFeedbacks
-  m_TagString: Untagged
+  m_TagString: Checkbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24403,7 +24403,7 @@ GameObject:
   - component: {fileID: 2049339657}
   m_Layer: 5
   m_Name: VerticalMaxSpeed
-  m_TagString: Untagged
+  m_TagString: InputBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24670,7 +24670,7 @@ GameObject:
   - component: {fileID: 2101628138}
   m_Layer: 5
   m_Name: BouncyPlatformBounciness
-  m_TagString: Untagged
+  m_TagString: Slider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
