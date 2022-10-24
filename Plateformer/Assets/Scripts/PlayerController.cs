@@ -107,6 +107,9 @@ public class PlayerController : MonoBehaviour
     public LayerMask GroundLayer { get { return this.groundLayer; } set { this.groundLayer = value; } }
     [SerializeField] private LayerMask wallLayer;
     public LayerMask WallLayer { get { return this.wallLayer; } set { this.wallLayer = value; } }
+
+    [SerializeField] private LayerMask onlyWallLayer;
+    public LayerMask OnlyWallLayer { get { return this.onlyWallLayer; } set { this.onlyWallLayer = value; } }
     [Space(10)]
 
     #endregion
@@ -298,18 +301,11 @@ public class PlayerController : MonoBehaviour
         
         if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -12f)
         {
-            Debug.Log("speed y : " + speed.y);
             isBouncing = true;
             Bounce();
-            Debug.Log("speed y : " + speed.y);
-            Debug.Log("isBouncing ? " + isBouncing);
-
         }
         else if ((platformTag.Equals("BouncyPlatform") && speed.y > -12f && speed.y <= 0) || (isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending))
         {
-            Debug.Log("speed y : " + speed.y);
-            Debug.Log("isNotBouncing ? " + isBouncing);
-
             isBouncing = false;
             if (!platformTag.Equals("Slope")) speed.y = 0;
             if (prevGroundedStatus != isGrounded) transform.position += new Vector3(0, -.02f, 0);
@@ -354,7 +350,7 @@ public class PlayerController : MonoBehaviour
         }
 
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.deltaTime, wallLayer);
+        RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.deltaTime, onlyWallLayer);
         if (hit.collider != null && hit.collider.tag.Equals("Wall"))
         {
             ColliderDistance2D distance = boxCollider.Distance(hit.collider);

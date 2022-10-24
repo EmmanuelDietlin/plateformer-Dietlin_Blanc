@@ -9,6 +9,7 @@ TagManager:
   - BouncyPlatform
   - Spike
   - Slope
+  - Wall
   layers:
   - Default
   - TransparentFX
