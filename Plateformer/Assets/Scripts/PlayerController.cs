@@ -139,6 +139,9 @@ public class PlayerController : MonoBehaviour
     private bool prevGroundedStatus;
     private Vector2 horizontalMovDirection;
     private float currentHorizontalSpeed;
+
+    private int currentBounceNumber;
+    private int maxNumberOfBounces = 10;
     public float CurrentHorizontalSpeed { get { return currentHorizontalSpeed; } }
     private bool isDescending;
 
@@ -290,7 +293,7 @@ public class PlayerController : MonoBehaviour
             isGrabingWall = false;
         }
         
-        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -5f)
+        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -7f)
         {
             Debug.Log("speed y : " + speed.y);
             isBouncing = true;
@@ -299,10 +302,10 @@ public class PlayerController : MonoBehaviour
             Debug.Log("isBouncing ? " + isBouncing);
 
         }
-        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f && speed.y < 0))
+        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -7f && speed.y < 0))
         {
             Debug.Log("speed y : " + speed.y);
-            Debug.Log("isBouncing ? " + isBouncing);
+            Debug.Log("isNotBouncing ? " + isBouncing);
 
             isBouncing = false;
             if (!platformTag.Equals("Slope")) speed.y = 0;
