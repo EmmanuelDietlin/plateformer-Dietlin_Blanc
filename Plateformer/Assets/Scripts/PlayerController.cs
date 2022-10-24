@@ -289,18 +289,27 @@ public class PlayerController : MonoBehaviour
                 wallGrabStopStartTime = Time.time;
             isGrabingWall = false;
         }
-        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y < -5f)
+        
+        if (isGrounded && platformTag.Equals("BouncyPlatform") && speed.y <= -5f)
         {
+            Debug.Log("speed y : " + speed.y);
             isBouncing = true;
             Bounce();
+            Debug.Log("speed y : " + speed.y);
+            Debug.Log("isBouncing ? " + isBouncing);
+
         }
-        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f))
+        else if ((isGrounded && speed.y <= 0 && !platformTag.Equals("BouncyPlatform") && !isDescending) || (platformTag.Equals("BouncyPlatform") && speed.y > -5f && speed.y < 0))
         {
+            Debug.Log("speed y : " + speed.y);
+            Debug.Log("isBouncing ? " + isBouncing);
+
             isBouncing = false;
             if (!platformTag.Equals("Slope")) speed.y = 0;
             if (prevGroundedStatus != isGrounded) transform.position += new Vector3(0, -.02f, 0);
         }
-        //Debug.Log("grabbing wall ? " + isGrabingWall);
+
+        
         if ((Input.GetAxisRaw("Jump") > 0 || (jumpBufferTime > 0f && isGrounded)) && mayJumpMidAir && jumpsLeft > 0)
         {
             jumpBufferTime = 0f;

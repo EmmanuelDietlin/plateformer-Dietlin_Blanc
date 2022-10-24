@@ -15,7 +15,7 @@ public class MainMenuManager : MonoBehaviour
 
     private int mainMenuSelectedButton;
     private int controlsMenuSelectedButton;
-    private float changeButtonTimer = .2f;
+    private float changeButtonTimer = .1f;
     private float timer;
     private float quitDelay = .3f;
     private float quitTimer;
@@ -42,14 +42,17 @@ public class MainMenuManager : MonoBehaviour
         {
             SwitchMenu();
         }
-        if (Input.GetAxisRaw("Horizontal") != 0 && timer > changeButtonTimer) {
+        if (timer > changeButtonTimer && Input.GetAxisRaw("Horizontal") != 0) {
             timer = 0f;
             int dir = (int)Input.GetAxisRaw("Horizontal");
+            Debug.Log(dir);
             if (mainMenu.activeSelf)
             {
                 EventSystem.current.SetSelectedGameObject(null);
-                if (dir < 0 && mainMenuSelectedButton == 0) mainMenuSelectedButton = mainMenuButtons.Length - 1;
-                else mainMenuSelectedButton = (mainMenuSelectedButton + dir) % mainMenuButtons.Length;
+                if (dir < 0 && mainMenuSelectedButton == 0) 
+                    mainMenuSelectedButton = mainMenuButtons.Length - 1;
+                else 
+                    mainMenuSelectedButton = (mainMenuSelectedButton + dir) % mainMenuButtons.Length;
                 EventSystem.current.SetSelectedGameObject(mainMenuButtons[mainMenuSelectedButton].gameObject);
 
             }
