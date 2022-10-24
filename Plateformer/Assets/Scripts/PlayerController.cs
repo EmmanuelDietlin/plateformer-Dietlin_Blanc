@@ -139,7 +139,6 @@ public class PlayerController : MonoBehaviour
     private bool prevGroundedStatus;
     private Vector2 horizontalMovDirection;
     private float currentHorizontalSpeed;
-
     
     public float CurrentHorizontalSpeed { get { return currentHorizontalSpeed; } }
     private bool isDescending;
@@ -162,8 +161,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        speed.x = Mathf.Round(speed.x * 1000) / 1000;
-        speed.y = Mathf.Round(speed.y * 1000) / 1000;
+        speed.x = Mathf.Round(speed.x * 100000) / 100000;
+        speed.y = Mathf.Round(speed.y * 100000) / 100000;
+
+
         RaycastHit2D ground = Physics2D.CircleCast(transform.position, transform.localScale.x * 0.45f, Vector2.down, boxCollider.bounds.extents.y + .5f, groundLayer);
         horizontalMovDirection = Quaternion.Euler(0, 0, -90) * ground.normal;
 
@@ -415,7 +416,7 @@ public class PlayerController : MonoBehaviour
 
     private void Bounce()
     {
-        speed.y = Mathf.Min(speed.y * BouncyPlatformBounciness * -1f / Mathf.Sqrt(FallGravityFactor), VerticalMaxSpeed / Mathf.Sqrt(FallGravityFactor));
+        speed.y = Mathf.Round(Mathf.Min(speed.y * BouncyPlatformBounciness * -1f  * 1 / Mathf.Sqrt(fallGravityFactor), VerticalMaxSpeed * 1 / Mathf.Sqrt(fallGravityFactor)) *100000)/100000;
         feedbacks.OnBounce();
     }
 
