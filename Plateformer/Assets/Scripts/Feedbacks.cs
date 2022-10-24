@@ -22,6 +22,9 @@ public class Feedbacks : MonoBehaviour
     [SerializeField] private float vibrationEffectDuration;
     [SerializeField] private float blinkDelay;
 
+    [Header("Color")]
+    [SerializeField] private Color noMoreJumpsColor;
+
     [Header("Sound")]
     [Space(5)]
     [SerializeField] private AudioClip victorySound;
@@ -72,6 +75,8 @@ public class Feedbacks : MonoBehaviour
     private bool shakingActive;
     private bool vibrationsActive;
 
+    private Color baseColor;
+    private SpriteRenderer rend;
 
     public enum sounds { damage, victory, bounce, succion}
     
@@ -106,6 +111,9 @@ public class Feedbacks : MonoBehaviour
         shakingActive = false;
         vibrationsActive = false;
 
+        rend = playerSprite.GetComponent<SpriteRenderer>();
+        baseColor = rend.color;
+
     }
 
     // Update is called once per frame
@@ -113,6 +121,10 @@ public class Feedbacks : MonoBehaviour
     {
         if (audioTimer < 20f) audioTimer += Time.deltaTime;
         if (immunityTimer < 20f) immunityTimer += Time.deltaTime;
+        Debug.Log(baseColor);
+        Debug.Log(rend.color);
+        if (player.JumpsLeft == 0) rend.color = noMoreJumpsColor;
+        else rend.color = baseColor;
     }
 
     public void OnDamageTaken()
@@ -124,7 +136,6 @@ public class Feedbacks : MonoBehaviour
         if(!shakingActive) StartCoroutine(shakeCamera());
         if (vibrationsFeedbackEnabled && !vibrationsActive) StartCoroutine(GamepadVibrations(damageLowFreqVibrations, damageHighFreqVibrations));
         if (immunityTimer == 0f) PlaySound(sounds.damage);
-       
     }
 
     public void JumpParticles()
