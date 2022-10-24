@@ -349,14 +349,15 @@ public class PlayerController : MonoBehaviour
 
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
         RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.deltaTime, wallLayer);
-        if (hit.collider == null || hit.collider.tag.Equals("SoftPlatform"))
-        {
-            transform.position += (Vector3)speed * Time.deltaTime;
-        }
-        else
+        if (hit.collider != null && hit.collider.tag.Equals("Wall"))
         {
             ColliderDistance2D distance = boxCollider.Distance(hit.collider);
             transform.position += new Vector3(distance.normal.x, distance.normal.y, 0) * distance.distance;
+            
+        }
+        else 
+        {
+            transform.position += (Vector3)speed * Time.deltaTime;
         }
 
         if (!platformTag.Equals("Slope"))
