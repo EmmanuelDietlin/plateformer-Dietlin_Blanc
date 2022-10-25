@@ -152,17 +152,17 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 60;
         boxCollider = gameObject.GetComponent<BoxCollider2D>();
         JumpsLeft = JumpNumber;
         dashStartTime = 0f;
         isGrabingWall = false;
         feedbacks = gameObject.GetComponent<Feedbacks>();
         isDescending = false;
-        Time.fixedDeltaTime = 0.0167f;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
         //Limit the precision of floats to resolve the problem of different Bounce behavior on different computers
         speed.x = Mathf.Round(speed.x * 100000) / 100000;
@@ -192,7 +192,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetAxis("Jump") != 0 && JumpsLeft == 0)
             jumpBufferTime = JumpTimeTolerance;
-        jumpBufferTime -= Time.fixedDeltaTime;
+        jumpBufferTime -= Time.deltaTime;
 
         if(!isGrounded && isGrounded != prevGroundedStatus)
             isGroundedStopStartTime = Time.time;
@@ -276,9 +276,9 @@ public class PlayerController : MonoBehaviour
         else
         {
 
-            if (Mathf.Abs(speed.x) >= currentMaxXSpeed) speed.x *= Mathf.Max((1 - DashBrake * Time.fixedDeltaTime), 0);
+            if (Mathf.Abs(speed.x) >= currentMaxXSpeed) speed.x *= Mathf.Max((1 - DashBrake * Time.deltaTime), 0);
             
-            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - BrakeForce * Time.fixedDeltaTime),0);
+            if ((Input.GetAxisRaw("Horizontal") == 0f) && isGrounded) speed.x *= Mathf.Max((1 - BrakeForce * Time.deltaTime),0);
             else speed.x = Mathf.Abs(speed.x) > currentMaxXSpeed ? speed.x : Input.GetAxis("Horizontal") * currentMaxXSpeed;
 
             if (platformTag.Equals("Slope"))
@@ -354,7 +354,7 @@ public class PlayerController : MonoBehaviour
         }
 
         float movDirX = speed.x == 0 ? 0 : speed.x / Mathf.Abs(speed.x);
-        RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.fixedDeltaTime, onlyWallLayer);
+        RaycastHit2D hit = Physics2D.BoxCast((Vector2)transform.position, (Vector2)transform.localScale, Vector2.SignedAngle(Vector2.right, horizontalMovDirection), speed, speed.magnitude * Time.deltaTime, onlyWallLayer);
         if (hit.collider != null && hit.collider.tag.Equals("Wall"))
         {
             ColliderDistance2D distance = boxCollider.Distance(hit.collider);
@@ -363,7 +363,7 @@ public class PlayerController : MonoBehaviour
         }
         else 
         {
-            transform.position += (Vector3)speed * Time.fixedDeltaTime;
+            transform.position += (Vector3)speed * Time.deltaTime;
         }
 
         if (!platformTag.Equals("Slope"))
@@ -389,8 +389,8 @@ public class PlayerController : MonoBehaviour
     private void ApplyPhysics()
     {
         float gravityUsed = isGrabingWall ? GravityValue * WallFriction : GravityValue;
-        if (speed.y > 0) speed.y -= GravityValue * Time.fixedDeltaTime;
-        else if (speed.y > -VerticalMaxSpeed) speed.y -= gravityUsed * FallGravityFactor * Time.fixedDeltaTime;
+        if (speed.y > 0) speed.y -= GravityValue * Time.deltaTime;
+        else if (speed.y > -VerticalMaxSpeed) speed.y -= gravityUsed * FallGravityFactor * Time.deltaTime;
         else speed.y = -VerticalMaxSpeed;
 
     }
